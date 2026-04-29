@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Portfolio Wireframes — Lluís Estapé</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #1a1a1a; font-family: 'Caveat', cursive; }
+
+  /* Sketch style helpers */
+  .sk { font-family: 'Caveat', cursive; }
+  .mono { font-family: 'Share Tech Mono', monospace; }
+
+  .wire-box {
+    border: 2px solid #222;
+    background: #f5f0e8;
+    position: relative;
+  }
+  .wire-box-dark {
+    border: 2px solid #333;
+    background: #1c1c1c;
+    position: relative;
+  }
+  .wire-label {
+    font-family: 'Caveat', cursive;
+    font-size: 13px;
+    color: #555;
+    letter-spacing: 0.02em;
+  }
+  .wire-label-white {
+    font-family: 'Caveat', cursive;
+    font-size: 13px;
+    color: #888;
+  }
+  .accent { color: #e8a000; }
+  .accent2 { color: #4ecdc4; }
+  .dimline { border: none; border-top: 1px dashed #ccc; }
+  .dimline-dark { border: none; border-top: 1px dashed #333; }
+
+  /* hatched placeholder */
+  .hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      rgba(0,0,0,0.07) 5px,
+      rgba(0,0,0,0.07) 6px
+    );
+  }
+  .hatch-dark {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 5px,
+      rgba(255,255,255,0.04) 5px,
+      rgba(255,255,255,0.04) 6px
+    );
+  }
+
+  /* Annotation arrows */
+  .annotation {
+    font-family: 'Caveat', cursive;
+    font-size: 12px;
+    color: #e8a000;
+    position: absolute;
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+/* ─── SHARED MINI COMPONENTS ─── */
+
+function SkBtn({ children, accent, dark }) {
+  return (
+    <div style={{
+      display: 'inline-block',
+      border: `2px solid ${accent ? '#e8a000' : dark ? '#555' : '#333'}`,
+      borderRadius: 3,
+      padding: '3px 10px',
+      fontFamily: 'Caveat, cursive',
+      fontSize: 13,
+      color: accent ? '#e8a000' : dark ? '#aaa' : '#222',
+      background: accent ? 'rgba(232,160,0,0.1)' : 'transparent',
+    }}>{children}</div>
+  );
+}
+
+function Pill({ children, accent }) {
+  return (
+    <span style={{
+      display: 'inline-block',
+      border: `1.5px solid ${accent ? '#e8a000' : '#333'}`,
+      borderRadius: 20,
+      padding: '1px 8px',
+      fontFamily: 'Caveat, cursive',
+      fontSize: 12,
+      color: accent ? '#e8a000' : '#444',
+      marginRight: 4,
+    }}>{children}</span>
+  );
+}
+
+function HatchBox({ width, height, dark, label, style = {} }) {
+  return (
+    <div style={{
+      width, height,
+      border: `1.5px dashed ${dark ? '#444' : '#bbb'}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: 'Caveat, cursive',
+      fontSize: 12,
+      color: dark ? '#555' : '#aaa',
+      background: dark
+        ? 'repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(255,255,255,0.03) 5px,rgba(255,255,255,0.03) 6px)'
+        : 'repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(0,0,0,0.05) 5px,rgba(0,0,0,0.05) 6px)',
+      flexShrink: 0,
+      ...style,
+    }}>{label || ''}</div>
+  );
+}
+
+/* ─── VARIATION A: IDE / FILE TREE ─── */
+
+function VariationA() {
+  const files = ['Synth1.0','MatlabEQ','QTGNN','Compressor','Limiter','Spectrum'];
+  const [active, setActive] = useState(0);
+  const tags = [['C++','JUCE','DSP'],['MATLAB','DSP'],['Python','GNN','Quantum'],['C++','JUCE'],['C++','JUCE'],['C++','JUCE','FFT']];
+  const descs = [
+    'Polyphonic wavetable VST3 — wavetable morphing, LFO, FX rack, 3-band EQ',
+    '5-band parametric EQ — biquad filters, live FFT, drag-on-plot controls',
+    'Quantum-Temporal GNN for stock price prediction with FinBERT sentiment',
+    'Dynamic range compressor VST3 — threshold, ratio, attack, release',
+    'Brickwall limiter VST3 — lock-free oscilloscope, envelope follower',
+    'Real-time spectrum analyzer — Bézier FFT, VU meters, stereo panning',
+  ];
+
+  return (
+    <div style={{ width: 1100, height: 640, background: '#141414', border: '2px solid #2a2a2a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Title bar */}
+      <div style={{ height: 36, background: '#1e1e1e', borderBottom: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8, flexShrink: 0 }}>
+        <div style={{ width: 10, height: 10, borderRadius: '50%', border: '1.5px solid #555' }} />
+        <div style={{ width: 10, height: 10, borderRadius: '50%', border: '1.5px solid #555' }} />
+        <div style={{ width: 10, height: 10, borderRadius: '50%', border: '1.5px solid #555' }} />
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'Caveat', fontSize: 13, color: '#555' }}>lluisestape.dev — portfolio.exe</div>
+        <BurgerMenu dark />
+      </div>
+      {/* Tab bar */}
+      <div style={{ height: 30, background: '#1a1a1a', borderBottom: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', padding: '0 8px', gap: 2, flexShrink: 0 }}>
+        {['~/about','~/projects','~/skills','~/contact'].map((t,i) => (
+          <div key={i} style={{ padding: '2px 14px', fontFamily: 'Caveat', fontSize: 13, color: i===1 ? '#e8a000' : '#555', borderBottom: i===1 ? '2px solid #e8a000' : 'none' }}>{t}</div>
+        ))}
+      </div>
+      {/* Body */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Sidebar */}
+        <div style={{ width: 180, borderRight: '1px solid #2a2a2a', background: '#161616', padding: '12px 0', flexShrink: 0, overflowY: 'auto' }}>
+          <div style={{ fontFamily: 'Caveat', fontSize: 11, color: '#444', padding: '0 12px 6px', letterSpacing: 1 }}>EXPLORER</div>
+          <div style={{ fontFamily: 'Caveat', fontSize: 12, color: '#555', padding: '0 12px 4px' }}>▾ projects/</div>
+          {files.map((f, i) => (
+            <div key={i} onClick={() => setActive(i)} style={{ padding: '3px 12px 3px 24px', fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: i === active ? '#e8a000' : '#666', background: i === active ? 'rgba(232,160,0,0.06)' : 'transparent', cursor: 'pointer', borderLeft: i === active ? '2px solid #e8a000' : '2px solid transparent' }}>
+              {f}.md
+            </div>
+          ))}
+          <div style={{ marginTop: 12, fontFamily: 'Caveat', fontSize: 12, color: '#555', padding: '0 12px 4px' }}>▾ about/</div>
+          <div style={{ padding: '3px 12px 3px 24px', fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#555' }}>resume.pdf</div>
+          <div style={{ padding: '3px 12px 3px 24px', fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#555' }}>skills.json</div>
+        </div>
+        {/* Main editor */}
+        <div style={{ flex: 1, padding: '20px 28px', overflowY: 'auto', background: '#141414' }}>
+          {/* Line numbers + content */}
+          <div style={{ display: 'flex', gap: 16 }}>
+            <div style={{ flexShrink: 0, fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#333', lineHeight: '22px', textAlign: 'right', paddingTop: 2 }}>
+              {[...Array(12)].map((_, i) => <div key={i}>{i+1}</div>)}
+            </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#444', marginBottom: 2 }}># {files[active]}</div>
+              <div style={{ fontFamily: 'Caveat', fontSize: 20, color: '#ddd', marginBottom: 8 }}>{files[active]}</div>
+              <div style={{ display: 'flex', gap: 4, marginBottom: 14, flexWrap: 'wrap' }}>
+                {tags[active].map(t => <Pill key={t} accent={false}>{t}</Pill>)}
+              </div>
+              <div style={{ fontFamily: 'Caveat', fontSize: 15, color: '#777', lineHeight: 1.6, marginBottom: 16 }}>{descs[active]}</div>
+              <hr style={{ border: 'none', borderTop: '1px dashed #2a2a2a', margin: '12px 0' }} />
+              <HatchBox width="100%" height={140} dark label="screenshot / demo" style={{ width: '100%' }} />
+              <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
+                <SkBtn dark>⌘ GitHub</SkBtn>
+                <SkBtn accent>▶ Live demo</SkBtn>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Minimap */}
+        <div style={{ width: 50, background: '#121212', borderLeft: '1px solid #222', flexShrink: 0 }}>
+          {[...Array(20)].map((_, i) => (
+            <div key={i} style={{ height: 4, margin: '2px 6px', background: i % 3 === 0 ? '#2a2a2a' : '#1e1e1e', borderRadius: 1 }} />
+          ))}
+        </div>
+      </div>
+      {/* Status bar */}
+      <div style={{ height: 22, background: '#e8a000', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 16, flexShrink: 0 }}>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#1a1a1a' }}>⎇ main</span>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#1a1a1a' }}>C++ · JUCE · Python</span>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#1a1a1a', marginLeft: 'auto' }}>Lluís Estapé</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── VARIATION B: DAW MIXER ─── */
+
+function WaveformBar({ h, dark }) {
+  const bars = 32;
+  return (
+    <svg width="100%" height={h} style={{ display: 'block' }}>
+      {[...Array(bars)].map((_, i) => {
+        const bh = (Math.sin(i * 0.9) * 0.4 + Math.sin(i * 0.3) * 0.3 + 0.5) * h * 0.7 + h * 0.1;
+        return (
+          <rect key={i} x={`${(i/bars)*100}%`} y={(h - bh)/2} width={`${80/bars}%`} height={bh}
+            fill={dark ? 'rgba(232,160,0,0.25)' : 'rgba(0,0,0,0.15)'} rx={1} />
+        );
+      })}
+    </svg>
+  );
+}
+
+function ChannelStrip({ name, tags, active }) {
+  return (
+    <div style={{
+      width: 130, flexShrink: 0,
+      border: `1.5px solid ${active ? '#e8a000' : '#2a2a2a'}`,
+      background: '#161616',
+      display: 'flex', flexDirection: 'column',
+      overflow: 'hidden',
+    }}>
+      {/* Channel header */}
+      <div style={{ background: active ? 'rgba(232,160,0,0.12)' : '#1c1c1c', padding: '6px 8px', borderBottom: `1px solid ${active ? '#e8a000' : '#2a2a2a'}` }}>
+        <div style={{ fontFamily: 'Caveat', fontSize: 14, color: active ? '#e8a000' : '#888', marginBottom: 2 }}>{name}</div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {tags.map(t => <span key={t} style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#444', border: '1px solid #2a2a2a', padding: '0 3px', borderRadius: 2 }}>{t}</span>)}
+        </div>
+      </div>
+      {/* Waveform display */}
+      <div style={{ height: 50, background: '#111', borderBottom: '1px solid #222' }}>
+        <WaveformBar h={50} dark />
+      </div>
+      {/* Fader area */}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 8, gap: 6 }}>
+        {/* Knob placeholder */}
+        <div style={{ width: 28, height: 28, borderRadius: '50%', border: `1.5px solid ${active ? '#e8a000' : '#333'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 3, height: 8, background: active ? '#e8a000' : '#444', borderRadius: 2, transform: 'translateY(-2px)' }} />
+        </div>
+        {/* Level meter */}
+        <div style={{ width: 12, height: 60, background: '#0a0a0a', border: '1px solid #222', borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
+          <div style={{ position: 'absolute', bottom: 0, width: '100%', height: `${active ? 70 : 40}%`, background: active ? 'linear-gradient(to top, #4ecdc4, #e8a000)' : 'linear-gradient(to top, #2a4a3a, #1a3a2a)' }} />
+        </div>
+        <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#444' }}>-6dB</div>
+      </div>
+      {/* Solo/mute */}
+      <div style={{ display: 'flex', borderTop: '1px solid #222' }}>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'Caveat', fontSize: 11, color: '#555', padding: '3px 0', borderRight: '1px solid #222' }}>S</div>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'Caveat', fontSize: 11, color: '#555', padding: '3px 0' }}>M</div>
+      </div>
+    </div>
+  );
+}
+
+function VariationB() {
+  const channels = [
+    { name: 'Synth 1.0', tags: ['C++','JUCE'] },
+    { name: 'MatlabEQ', tags: ['MATLAB'] },
+    { name: 'QTGNN', tags: ['Python','ML'] },
+    { name: 'Compressor', tags: ['C++','JUCE'] },
+    { name: 'Limiter', tags: ['C++','JUCE'] },
+    { name: 'Spectrum', tags: ['C++','FFT'] },
+  ];
+
+  return (
+    <div style={{ width: 1100, height: 640, background: '#111', border: '2px solid #2a2a2a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Hero / transport bar */}
+      <div style={{ height: 160, background: '#0d0d0d', borderBottom: '1px solid #222', position: 'relative', overflow: 'hidden', flexShrink: 0 }}>
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.4 }}><WaveformBar h={160} dark /></div>
+        <div style={{ position: 'relative', padding: '20px 32px' }}>
+          <div style={{ fontFamily: 'Caveat', fontSize: 13, color: '#555', marginBottom: 4 }}>LLUÍS ESTAPÉ — AUDIO DSP / ML ENGINEER</div>
+          <div style={{ fontFamily: 'Caveat', fontSize: 38, fontWeight: 700, color: '#e8a000', lineHeight: 1 }}>Project Portfolio</div>
+          <div style={{ fontFamily: 'Caveat', fontSize: 16, color: '#666', marginTop: 6 }}>C++ · JUCE · MATLAB · Python · Quantum ML</div>
+        </div>
+        {/* Burger */}
+        <div style={{ position: 'absolute', right: 24, bottom: 28 }}><BurgerMenu dark /></div>
+        {/* Transport controls */}
+        <div style={{ position: 'absolute', right: 24, top: '50%', transform: 'translateY(-65%)', display: 'flex', gap: 8, alignItems: 'center' }}>
+          {['⏮','⏪','▶','⏩','⏭'].map(c => (
+            <div key={c} style={{ width: 28, height: 28, border: '1.5px solid #333', borderRadius: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Caveat', color: '#555', fontSize: 12 }}>{c}</div>
+          ))}
+        </div>
+        {/* Nav */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, display: 'flex', borderTop: '1px solid #222' }}>
+          {['about','projects','skills','contact','resume.pdf'].map((n, i) => (
+            <div key={n} style={{ flex: 1, textAlign: 'center', padding: '4px 0', fontFamily: 'Caveat', fontSize: 13, color: i===1 ? '#e8a000' : '#444', borderRight: '1px solid #222', borderBottom: i===1 ? '2px solid #e8a000' : 'none' }}>{n}</div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section label */}
+      <div style={{ padding: '10px 20px 6px', flexShrink: 0 }}>
+        <div style={{ fontFamily: 'Caveat', fontSize: 12, color: '#444', letterSpacing: 1 }}>▶ PROJECTS — 6 TRACKS</div>
+      </div>
+
+      {/* Mixer channels */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden', padding: '0 16px 16px', gap: 6 }}>
+        {/* Master label */}
+        <div style={{ width: 60, flexShrink: 0, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingBottom: 8 }}>
+          <div style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontFamily: 'Caveat', fontSize: 11, color: '#333', letterSpacing: 2 }}>PROJECTS</div>
+        </div>
+        {/* Channels */}
+        {channels.map((c, i) => (
+          <ChannelStrip key={i} name={c.name} tags={c.tags} active={i===0} />
+        ))}
+        {/* Master channel */}
+        <div style={{ width: 70, flexShrink: 0, border: '1.5px solid #333', background: '#161616', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+          <div style={{ background: '#1c1c1c', padding: '6px 8px', borderBottom: '1px solid #333' }}>
+            <div style={{ fontFamily: 'Caveat', fontSize: 13, color: '#e8a000' }}>MASTER</div>
+          </div>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8, padding: 8 }}>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[0,1].map(i => (
+                <div key={i} style={{ width: 12, height: 80, background: '#0a0a0a', border: '1px solid #222', borderRadius: 2, overflow: 'hidden', position: 'relative' }}>
+                  <div style={{ position: 'absolute', bottom: 0, width: '100%', height: '65%', background: 'linear-gradient(to top, #4ecdc4, #e8a000)' }} />
+                </div>
+              ))}
+            </div>
+            <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#555' }}>-3dB</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{ height: 24, background: '#0a0a0a', borderTop: '1px solid #222', display: 'flex', alignItems: 'center', padding: '0 16px', flexShrink: 0 }}>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#333' }}>lluisestape@upc.edu · github.com/lluisestape-upc · linkedin</span>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#333', marginLeft: 'auto' }}>BPM: 120 · 44.1kHz · 32-bit</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── VARIATION C: TERMINAL / CLI ─── */
+
+function TermLine({ prompt, cmd, color }) {
+  return (
+    <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 12, lineHeight: 1.8, display: 'flex', gap: 6 }}>
+      {prompt && <span style={{ color: '#4ecdc4' }}>{prompt}</span>}
+      {cmd && <span style={{ color: color || '#ccc' }}>{cmd}</span>}
+    </div>
+  );
+}
+
+function ProjectCard({ name, tags, desc, i }) {
+  return (
+    <div style={{ border: '1px solid #2a2a2a', background: '#141414', padding: '12px 16px', marginBottom: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 4 }}>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#333' }}>[{String(i).padStart(2,'0')}]</span>
+        <span style={{ fontFamily: 'Caveat', fontSize: 18, color: '#e8a000' }}>{name}</span>
+      </div>
+      <div style={{ fontFamily: 'Caveat', fontSize: 13, color: '#666', marginBottom: 6, paddingLeft: 30 }}>{desc}</div>
+      <div style={{ paddingLeft: 30, display: 'flex', gap: 4 }}>
+        {tags.map(t => <span key={t} style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#4ecdc4', border: '1px solid #1e3a3a', padding: '1px 5px', borderRadius: 2 }}>{t}</span>)}
+      </div>
+    </div>
+  );
+}
+
+function VariationC() {
+  const projects = [
+    { name: 'Synth 1.0', tags: ['C++','JUCE','DSP','VST3'], desc: 'Polyphonic wavetable synthesizer — morphing, LFO, FX rack' },
+    { name: 'MatlabParametricEQ', tags: ['MATLAB','DSP','IIR'], desc: '5-band parametric EQ with live FFT + drag controls' },
+    { name: 'QTGNN-Finance', tags: ['Python','GNN','Quantum','FinBERT'], desc: 'Quantum-temporal GNN for stock price prediction' },
+    { name: 'BasicCompressor', tags: ['C++','JUCE','VST3'], desc: 'Dynamic range compressor with transfer curve display' },
+    { name: 'BasicLimiter', tags: ['C++','JUCE','VST3'], desc: 'Brickwall limiter with lock-free oscilloscope' },
+    { name: 'SpectrumAnalyzer', tags: ['C++','JUCE','FFT'], desc: 'Real-time Bézier FFT spectrum with VU meters' },
+  ];
+
+  return (
+    <div style={{ width: 1100, height: 640, background: '#0d0d0d', border: '2px solid #2a2a2a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Top nav */}
+      <div style={{ height: 40, background: '#111', borderBottom: '1px solid #1e1e1e', display: 'flex', alignItems: 'center', padding: '0 20px', gap: 0, flexShrink: 0 }}>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#4ecdc4', marginRight: 8 }}>lluisestape</span>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#555' }}>@portfolio</span>
+        <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#333', marginLeft: 'auto' }}>
+          {['about','projects','skills','contact'].map((n, i) => (
+            <span key={n} style={{ marginLeft: 20, color: i===1 ? '#e8a000' : '#444' }}>{n}</span>
+          ))}
+        </span>
+        <span style={{ marginLeft: 16 }}><BurgerMenu dark /></span>
+      </div>
+
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Terminal left */}
+        <div style={{ flex: 1, padding: '20px 24px', overflowY: 'auto', borderRight: '1px solid #1e1e1e' }}>
+          <TermLine prompt="lluisestape@portfolio:~$" cmd=" whoami" />
+          <div style={{ marginLeft: 0, padding: '8px 0', marginBottom: 8 }}>
+            <div style={{ fontFamily: 'Caveat', fontSize: 28, fontWeight: 700, color: '#fff', lineHeight: 1 }}>Lluís Estapé</div>
+            <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 11, color: '#4ecdc4', marginTop: 4 }}>Audio DSP Engineer · ML Researcher · UPC Student</div>
+            <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#444', marginTop: 6 }}>C++ · JUCE · MATLAB · Python · Quantum ML</div>
+          </div>
+
+          <TermLine prompt="lluisestape@portfolio:~$" cmd=" ls projects/" />
+          <div style={{ height: 8 }} />
+          {projects.map((p, i) => (
+            <ProjectCard key={i} {...p} i={i+1} />
+          ))}
+
+          {/* Cursor */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
+            <span style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 12, color: '#4ecdc4' }}>lluisestape@portfolio:~$</span>
+            <div style={{ width: 8, height: 14, background: '#e8a000', animation: 'none' }} />
+          </div>
+        </div>
+
+        {/* Right panel — skills + contact */}
+        <div style={{ width: 280, padding: '20px 20px', flexShrink: 0, overflowY: 'auto' }}>
+          <TermLine prompt="$" cmd=" cat skills.json" />
+          <div style={{ marginTop: 8, marginBottom: 16 }}>
+            {[
+              { cat: 'Audio DSP', items: ['C++', 'JUCE', 'MATLAB', 'IIR/FIR', 'VST3', 'FFT'] },
+              { cat: 'ML / AI', items: ['Python', 'PyTorch', 'GNN', 'FinBERT', 'Quantum'] },
+              { cat: 'Tools', items: ['Git', 'Visual Studio', 'Projucer'] },
+            ].map(({ cat, items }) => (
+              <div key={cat} style={{ marginBottom: 12 }}>
+                <div style={{ fontFamily: 'Caveat', fontSize: 13, color: '#e8a000', marginBottom: 4 }}>{cat}</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+                  {items.map(it => (
+                    <span key={it} style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#666', border: '1px solid #222', padding: '2px 6px', borderRadius: 2 }}>{it}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px dashed #1e1e1e', margin: '12px 0' }} />
+
+          <TermLine prompt="$" cmd=" cat contact.txt" />
+          <div style={{ marginTop: 8 }}>
+            {[
+              { icon: '✉', val: 'lluis.estape@estudiantat.upc.edu' },
+              { icon: '⌥', val: 'github.com/lluisestape-upc' },
+              { icon: '◈', val: 'linkedin.com/in/lluís-estapé' },
+            ].map(({ icon, val }) => (
+              <div key={val} style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 10, color: '#555', marginBottom: 6, display: 'flex', gap: 8 }}>
+                <span style={{ color: '#4ecdc4' }}>{icon}</span>
+                <span>{val}</span>
+              </div>
+            ))}
+          </div>
+
+          <hr style={{ border: 'none', borderTop: '1px dashed #1e1e1e', margin: '12px 0' }} />
+
+          <TermLine prompt="$" cmd=" open resume.pdf" />
+          <div style={{ marginTop: 8 }}>
+            <div style={{ border: '1.5px solid #e8a000', padding: '6px 12px', fontFamily: 'Caveat', fontSize: 14, color: '#e8a000', display: 'inline-block', cursor: 'pointer' }}>↓ Download Resume</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── BURGER MENU ─── */
+
+function BurgerMenu({ dark }) {
+  const [open, setOpen] = React.useState(false);
+  const navItems = ['about', 'projects', 'skills', 'contact', 'resume.pdf'];
+  const bg = dark ? '#111' : '#1a1a1a';
+  const border = dark ? '#2a2a2a' : '#222';
+
+  return (
+    <div style={{ position: 'relative', zIndex: 100 }}>
+      {/* Burger icon */}
+      <div onClick={() => setOpen(o => !o)} style={{ width: 32, height: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5, cursor: 'pointer', border: `1.5px solid ${open ? '#e8a000' : border}`, borderRadius: 3, background: open ? 'rgba(232,160,0,0.08)' : 'transparent', padding: 6 }}>
+        <div style={{ width: '100%', height: 2, background: open ? '#e8a000' : '#666', transition: 'all 0.2s', transform: open ? 'rotate(45deg) translate(2px, 4px)' : 'none', borderRadius: 1 }} />
+        <div style={{ width: '100%', height: 2, background: open ? 'transparent' : '#666', transition: 'all 0.2s', borderRadius: 1 }} />
+        <div style={{ width: '100%', height: 2, background: open ? '#e8a000' : '#666', transition: 'all 0.2s', transform: open ? 'rotate(-45deg) translate(2px, -4px)' : 'none', borderRadius: 1 }} />
+      </div>
+
+      {/* Drawer */}
+      {open && (
+        <div style={{ position: 'absolute', top: 38, right: 0, width: 200, background: bg, border: `1.5px solid #e8a000`, zIndex: 999 }}>
+          <div style={{ fontFamily: 'Caveat', fontSize: 11, color: '#444', padding: '8px 14px 4px', letterSpacing: 1 }}>NAVIGATION</div>
+          {navItems.map((n, i) => (
+            <div key={n} onClick={() => setOpen(false)} style={{ padding: '8px 14px', fontFamily: n === 'resume.pdf' ? 'Share Tech Mono, monospace' : 'Caveat', fontSize: n === 'resume.pdf' ? 11 : 15, color: i === 1 ? '#e8a000' : '#888', borderTop: `1px solid ${border}`, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: '#333', fontFamily: 'Share Tech Mono, monospace', fontSize: 10 }}>{String(i+1).padStart(2,'0')}</span>
+              {n}
+              {n === 'resume.pdf' && <span style={{ marginLeft: 'auto', color: '#e8a000', fontSize: 12 }}>↓</span>}
+            </div>
+          ))}
+          <div style={{ padding: '8px 14px', borderTop: `1px solid ${border}` }}>
+            <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#333' }}>lluisestape-upc · github</div>
+            <div style={{ fontFamily: 'Share Tech Mono, monospace', fontSize: 9, color: '#333' }}>lluís-estapé · linkedin</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ─── CANVAS WRAPPER ─── */
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="wires" title="Portfolio Wireframes — 3 Directions">
+        <DCArtboard id="a" label="A — IDE / File Explorer" width={1100} height={640}>
+          <VariationA />
+        </DCArtboard>
+        <DCArtboard id="b" label="B — DAW Mixer / Channel Strips" width={1100} height={640}>
+          <VariationB />
+        </DCArtboard>
+        <DCArtboard id="c" label="C — Terminal / CLI" width={1100} height={640}>
+          <VariationC />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

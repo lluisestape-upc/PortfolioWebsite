@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lluís Estapé — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #09090f;
+  --surface: #111118;
+  --surface2: #16161f;
+  --border: rgba(255,255,255,0.07);
+  --text: #e2e2ec;
+  --muted: #6b6b84;
+  --amber: #e8a000;
+  --amber-soft: rgba(232,160,0,0.10);
+  --teal: #4ecdc4;
+  --sans: 'Sora', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+}
+html { scroll-behavior: smooth; }
+html, body { min-height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 48px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(9,9,15,0.95), transparent);
+  backdrop-filter: blur(8px);
+}
+.nav-left { display: flex; flex-direction: column; gap: 2px; }
+.nav-logo { font-family: var(--sans); font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+.nav-logo span { color: var(--amber); }
+.nav-kicker { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; white-space: nowrap; }
+
+/* ── BURGER ── */
+.burger { width: 40px; height: 40px; cursor: pointer; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: none; border: none; }
+.burger-line { display: block; width: 24px; height: 1.5px; background: var(--text); border-radius: 2px; transform-origin: center; transition: transform 0.35s cubic-bezier(.77,0,.18,1), opacity 0.25s ease, width 0.3s ease; }
+.burger.open .burger-line:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.burger.open .burger-line:nth-child(2) { opacity: 0; width: 0; }
+.burger.open .burger-line:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+/* ── OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0; z-index: 99;
+  background: rgba(9,9,15,0.97);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+  backdrop-filter: blur(16px);
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+.overlay-link {
+  font-family: var(--sans); font-size: clamp(32px, 6vw, 64px); font-weight: 700; color: var(--muted);
+  letter-spacing: -1px; cursor: pointer; transition: color 0.2s ease;
+  transform: translateY(20px); opacity: 0;
+  transition: color 0.2s ease, transform 0.5s cubic-bezier(.77,0,.18,1), opacity 0.5s ease;
+}
+.overlay.open .overlay-link { transform: translateY(0); opacity: 1; }
+.overlay.open .overlay-link:nth-child(1) { transition-delay: 0.05s; }
+.overlay.open .overlay-link:nth-child(2) { transition-delay: 0.1s; }
+.overlay.open .overlay-link:nth-child(3) { transition-delay: 0.15s; }
+.overlay.open .overlay-link:nth-child(4) { transition-delay: 0.2s; }
+.overlay.open .overlay-link:nth-child(5) { transition-delay: 0.25s; }
+.overlay-link:hover { color: #fff; }
+.overlay-link:hover .overlay-link-num { color: var(--amber); }
+.overlay-link-num { font-size: 0.25em; color: #333; vertical-align: super; margin-right: 8px; font-family: var(--mono); transition: color 0.2s; }
+.overlay-socials { position: absolute; bottom: 48px; display: flex; gap: 32px; }
+.overlay-social { font-family: var(--mono); font-size: 12px; color: var(--muted); transition: color 0.2s; }
+.overlay-social:hover { color: var(--amber); }
+
+/* ── SECTIONS ── */
+section { padding: 120px 48px; max-width: 1100px; margin: 0 auto; }
+
+/* ── HERO ── */
+#hero { padding-top: 20px; padding-bottom: 100px; }
+.hero-kicker { font-family: var(--mono); font-size: 12px; color: var(--amber); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 24px; }
+.hero-name { font-size: clamp(52px, 8vw, 96px); font-weight: 700; line-height: 0.95; letter-spacing: -3px; color: #fff; margin-bottom: 28px; }
+.hero-name em { font-style: normal; color: var(--amber); }
+.hero-sub { font-size: 18px; color: var(--muted); font-weight: 300; max-width: 540px; line-height: 1.65; margin-bottom: 48px; }
+.hero-links { display: flex; gap: 12px; flex-wrap: wrap; }
+.hero-link { padding: 10px 22px; border: 1px solid var(--border); border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--muted); transition: all 0.2s; }
+.hero-link:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+.hero-link.primary { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+.wave-wrap { margin-top: 60px; opacity: 0.7; background: #0a0a10; border: 1px solid var(--border); border-radius: 8px 8px 0 0; padding: 12px; }
+
+/* ── MIXER ── */
+.mixer-wrap { margin-top: 0; background: #0a0a10; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; padding: 16px 12px 12px; }
+.mixer-channels { display: flex; gap: 8px; align-items: flex-end; height: 120px; justify-content: space-between; }
+.mixer-ch { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; position: relative; height: 100%; }
+.mixer-track { flex: 1; width: 2px; background: rgba(255,255,255,0.08); border-radius: 1px; position: relative; margin: 4px 0; }
+.mixer-fader { position: absolute; left: 50%; transform: translateX(-50%); width: 22px; height: 10px; background: linear-gradient(to bottom, #3a3a3a, #1a1a1a); border: 1px solid rgba(255,255,255,0.15); border-radius: 2px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.5); transition: background 0.15s; }
+.mixer-fader::after { content: ''; position: absolute; top: 50%; left: 3px; right: 3px; height: 1px; background: rgba(255,255,255,0.25); transform: translateY(-50%); }
+.mixer-label { font-family: var(--mono); font-size: 8px; color: var(--muted); letter-spacing: 1px; }
+
+/* ── SECTION HEADER ── */
+.section-header { margin-bottom: 56px; }
+.section-label { font-family: var(--mono); font-size: 11px; color: var(--amber); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+.section-title { font-size: clamp(28px, 4vw, 40px); font-weight: 700; color: #fff; letter-spacing: -1px; }
+
+/* ── PROJECTS GRID ── */
+.projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .projects-grid { grid-template-columns: 1fr; } nav { padding: 0 24px; } section { padding: 80px 24px; } }
+.project-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 28px 28px 24px;
+  cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.project-card:hover { border-color: rgba(232,160,0,0.35); background: var(--surface2); transform: translateY(-2px); }
+.project-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.project-lang-dot { display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.project-arrow { color: var(--muted); font-size: 16px; transition: transform 0.2s, color 0.2s; }
+.project-card:hover .project-arrow { transform: translate(3px, -3px); color: var(--amber); }
+.project-name { font-size: 18px; font-weight: 600; color: #fff; }
+.project-tagline { font-size: 13px; color: var(--muted); line-height: 1.55; }
+.project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.tag { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); }
+
+/* ── PROJECT MODAL ── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 200; background: rgba(9,9,15,0.88);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  backdrop-filter: blur(12px); padding: 48px;
+}
+.modal-backdrop.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--surface); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 40px 44px; max-width: 640px; width: 100%;
+  max-height: 80vh; overflow-y: auto;
+  transform: translateY(16px); transition: transform 0.3s cubic-bezier(.77,0,.18,1);
+}
+.modal-backdrop.open .modal { transform: translateY(0); }
+.modal-close { position: absolute; top: 20px; right: 20px; cursor: pointer; color: var(--muted); font-size: 22px; line-height: 1; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: background 0.15s, color 0.15s; }
+.modal-close:hover { background: var(--surface2); color: #fff; }
+.modal-wave { margin: 20px 0; opacity: 0.6; }
+.features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.feature-item { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.feature-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
+
+/* ── SKILLS ── */
+.skills-groups { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+@media (max-width: 720px) { .skills-groups { grid-template-columns: 1fr; } }
+.skill-group-label { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+.skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.skill-pill {
+  font-family: var(--mono); font-size: 12px; color: var(--text);
+  padding: 7px 14px; border: 1px solid var(--border); border-radius: 100px;
+  background: var(--surface);
+  opacity: 0; transform: translateY(10px);
+  transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.2s, color 0.2s;
+}
+.skill-pill.visible { opacity: 1; transform: none; }
+.skill-pill:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ── ABOUT ── */
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+@media (max-width: 720px) { .about-grid { grid-template-columns: 1fr; } }
+.about-body { font-size: 15px; color: var(--muted); line-height: 1.8; }
+.about-body p + p { margin-top: 16px; }
+.about-body strong { color: var(--text); font-weight: 500; }
+.about-stats { display: flex; flex-direction: column; gap: 20px; }
+.about-stat { padding: 20px 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+.about-stat-num { font-size: 36px; font-weight: 700; color: var(--amber); letter-spacing: -1px; line-height: 1; }
+.about-stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── CONTACT ── */
+#contact { padding-bottom: 160px; }
+.contact-inner { display: flex; align-items: flex-start; gap: 80px; }
+.contact-links { display: flex; flex-direction: column; gap: 10px; margin-top: 32px; }
+.contact-link { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); font-size: 13px; color: var(--muted); transition: all 0.2s; }
+.contact-link:hover { border-color: var(--amber); color: var(--amber); background: var(--amber-soft); }
+.contact-link-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.resume-btn { display: inline-flex; align-items: center; gap: 10px; margin-top: 24px; padding: 14px 28px; background: var(--amber); color: #09090f; font-weight: 600; font-size: 14px; border-radius: 8px; transition: opacity 0.2s; }
+.resume-btn:hover { opacity: 0.85; }
+
+/* ── FOOTER ── */
+footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; max-width: 100%; }
+.footer-copy { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.footer-stack { font-family: var(--mono); font-size: 11px; color: #2e2e38; }
+
+/* ── DIVIDER ── */
+.divider { border: none; border-top: 1px solid var(--border); margin: 0 48px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+.fade-up { opacity: 0; animation: fadeUp 0.6s ease forwards; }
+.fade-up-1 { animation-delay: 0.1s; } .fade-up-2 { animation-delay: 0.2s; } .fade-up-3 { animation-delay: 0.3s; } .fade-up-4 { animation-delay: 0.4s; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+/* ── TITLE ANIMATIONS ── */
+.section-header .section-label,
+.section-header .section-title {
+  opacity: 0; transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.77,0,.18,1);
+}
+.section-header .section-title { transition-delay: 0.1s; }
+.section-header.anim-in .section-label,
+.section-header.anim-in .section-title { opacity: 1; transform: none; }
+
+/* ── SPECTRUM DIVIDER ── */
+.music-divider { background: #0a0a10; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 48px; position: relative; overflow: hidden; }
+.music-divider-label { font-family: var(--mono); font-size: 9px; color: #2a2a38; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+.spectrum-canvas { display: block; width: 100%; }
+.piano-roll-wrap { display: flex; flex-direction: column; gap: 0; overflow: hidden; height: 80px; position: relative; }
+.vu-wrap { display: flex; justify-content: center; gap: 40px; align-items: flex-end; height: 100px; }
+.vu-channel { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.vu-label { font-family: var(--mono); font-size: 9px; color: var(--muted); letter-spacing: 2px; }
+.vu-meter { width: 28px; height: 80px; background: #0d0d14; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; position: relative; display: flex; flex-direction: column-reverse; gap: 1px; padding: 2px; }
+.vu-seg { height: 5px; border-radius: 1px; flex-shrink: 0; transition: background 0.08s; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-kicker">Audio DSP · Machine Learning · C++ · MATLAB · Python</div>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu">
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+    <span class="burger-line"></span>
+  </button>
+</nav>
+
+<!-- OVERLAY NAV -->
+<div class="overlay" id="overlay">
+  <a class="overlay-link" onclick="navTo('hero')"><span class="overlay-link-num">01</span>Home</a>
+  <a class="overlay-link" onclick="navTo('about')"><span class="overlay-link-num">02</span>About</a>
+  <a class="overlay-link" onclick="navTo('projects')"><span class="overlay-link-num">03</span>Projects</a>
+  <a class="overlay-link" onclick="navTo('skills')"><span class="overlay-link-num">04</span>Skills</a>
+  <a class="overlay-link" onclick="navTo('contact')"><span class="overlay-link-num">05</span>Contact</a>
+  <a class="overlay-link" onclick="navTo('about')"><span class="overlay-link-num">04</span>About</a>
+  <a class="overlay-link" onclick="navTo('contact')"><span class="overlay-link-num">05</span>Contact</a>
+  <div class="overlay-socials">
+    <a class="overlay-social" href="https://github.com/lluisestape-upc" target="_blank">GitHub</a>
+    <a class="overlay-social" href="https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309" target="_blank">LinkedIn</a>
+    <a class="overlay-social" href="https://www.beatstars.com/estapebeatz" target="_blank">BeatStars</a>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal" id="modal-content" style="position:relative">
+    <div class="modal-close" onclick="closeModal(null,true)">×</div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <h1 class="hero-name fade-up fade-up-1" style="margin-top:48px">Lluís<br/><em>Estapé</em></h1>
+  <p class="hero-sub fade-up fade-up-2">Telecommunications Engineering student at UPC TelecomBCN. I build real-time audio plugins, DSP tools, and ML systems using digital signal processing.</p>
+  <div class="hero-links fade-up fade-up-3">
+    <a class="hero-link" href="https://github.com/lluisestape-upc" target="_blank" style="display:inline-flex;align-items:center;gap:8px"><img src="uploads/icons8-github-logo-100.png" style="width:18px;height:18px;object-fit:contain"/> GitHub</a>
+    <a class="hero-link" href="https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309" target="_blank" style="display:inline-flex;align-items:center;gap:8px"><img src="uploads/pngegg.png" style="width:18px;height:18px;object-fit:contain"/> LinkedIn</a>
+    <a class="hero-link" href="uploads/CV_2026.pdf" download>Download CV</a>
+    <a class="hero-link" href="Portfolio.html" download="LluisEstape_Portfolio.html" style="display:inline-flex;align-items:center;gap:6px">Download Portfolio</a>
+  </div>
+  <div class="wave-wrap fade-up fade-up-4"><canvas id="hero-wave" height="48" style="width:100%;display:block"></canvas></div>
+  <div class="mixer-wrap" id="mixer-wrap"><div class="mixer-channels" id="mixer-channels"></div></div>
+</section>
+
+<hr class="divider"/>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <div class="section-label">About</div>
+    <div class="section-title">Background</div>
+  </div>
+  <div class="about-grid">
+    <div class="about-body">
+      <p>I'm a <strong>Telecommunications Engineering student at UPC TelecomBCN</strong> in Barcelona, with a focus on Audio and Video Signal Processing. I design and build VST3 plugins from scratch in C++/JUCE, write DSP tools in MATLAB, and research ML systems combining graph neural networks with quantum circuits.</p>
+      <p>Beyond engineering, I work as a <strong>Cybersecurity Strategy Consultant at Deloitte</strong>, have worked in film production at Arcadia Motion Pictures and Mundo Cero, and produce music independently on <a href="https://www.beatstars.com/estapebeatz" target="_blank" style="color:var(--amber)">BeatStars</a>.</p>
+      <p>I'm fluent in <strong>Spanish, Catalan, and English</strong>, conversational in French. Handball player of 10+ years.</p>
+    </div>
+    <div class="about-stats">
+      <div class="about-stat"><div class="about-stat-num">6</div><div class="about-stat-label">Open-source projects</div></div>
+      <div class="about-stat"><div class="about-stat-num">C++</div><div class="about-stat-label">Primary language for audio DSP</div></div>
+      <div class="about-stat"><div class="about-stat-num">BCN</div><div class="about-stat-label">Based in Barcelona, Spain</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECTRUM ANALYZER DIVIDER -->
+<div class="music-divider">
+  <div class="music-divider-label">Spectrum Analyzer</div>
+  <canvas class="spectrum-canvas" id="spectrum-canvas" height="80"></canvas>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <div class="section-label">Projects</div>
+    <div class="section-title">Portfolio</div>
+  </div>
+  <div class="projects-grid" id="projects-grid"></div>
+</section>
+
+<!-- PIANO ROLL DIVIDER -->
+<div class="music-divider">
+  <div class="music-divider-label">Piano Roll</div>
+  <canvas id="piano-canvas" height="80" style="display:block;width:100%"></canvas>
+</div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <div class="section-label">Skills</div>
+    <div class="section-title">Technical stack</div>
+  </div>
+  <div class="skills-groups">
+    <div>
+      <div class="skill-group-label">Audio DSP</div>
+      <div class="skill-pills" id="skills-dsp"></div>
+    </div>
+    <div>
+      <div class="skill-group-label">Machine Learning</div>
+      <div class="skill-pills" id="skills-ml"></div>
+    </div>
+    <div>
+      <div class="skill-group-label">Tools</div>
+      <div class="skill-pills" id="skills-tools"></div>
+    </div>
+  </div>
+</section>
+
+<!-- VU METERS DIVIDER -->
+<div class="music-divider">
+  <div class="music-divider-label">VU Meters</div>
+  <canvas id="vu-canvas" height="100" style="display:block;width:100%"></canvas>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <div class="section-label">Contact</div>
+    <div class="section-title">Let's connect</div>
+  </div>
+  <p style="color:var(--muted);font-size:15px;max-width:420px;line-height:1.7">Open to internships, collaborations, and audio DSP or ML projects. Always happy to talk.</p>
+  <div class="contact-links">
+    <a class="contact-link" href="mailto:lluis.estape@estudiantat.upc.edu">
+      <div class="contact-link-icon">✉</div>
+      lluis.estape@estudiantat.upc.edu
+    </a>
+    <a class="contact-link" href="https://github.com/lluisestape-upc" target="_blank">
+      <div class="contact-link-icon"><img src="uploads/icons8-github-logo-100.png" style="width:22px;height:22px;object-fit:contain;display:block"/></div>
+      github.com/lluisestape-upc
+    </a>
+    <a class="contact-link" href="https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309" target="_blank">
+      <div class="contact-link-icon"><img src="uploads/pngegg.png" style="width:22px;height:22px;object-fit:contain;display:block"/></div>
+      linkedin.com/in/lluís-estapé
+    </a>
+  </div>
+  <a class="resume-btn" href="uploads/CV_2026.pdf" download>↓ Download CV</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2026 Lluís Estapé · Barcelona</div>
+  <div class="footer-stack">C++ · JUCE · MATLAB · Python</div>
+</footer>
+
+<script>
+/* ── PROJECTS DATA ── */
+const PROJECTS = [
+  { id:'synth', name:'Synth 1.0', tagline:'Polyphonic wavetable VST3 synthesizer', tags:['C++','JUCE','DSP','VST3'], lang:'C++', langColor:'#f34b7d', desc:'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync/Bend/PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine routing to filter cutoff and pitch, interactive 3-band EQ with live FFT spectrum overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Reverb).', features:['16-voice polyphony','Wavetable morphing','4 warp modes','LFO → Filter/Pitch','FX rack + Reverb','XML preset system'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'eq', name:'Matlab Parametric EQ', tagline:'5-band parametric EQ with live FFT overlay', tags:['MATLAB','DSP','IIR'], lang:'MATLAB', langColor:'#e8a000', desc:'A 5-band parametric EQ built entirely with MATLAB uifigure. Each band supports Peaking, High-Pass, and Low-Pass topologies via second-order IIR biquad filters (RBJ Audio EQ Cookbook). Features drag-on-plot frequency/gain control, scroll-wheel Q adjustment, live FFT spectrum overlay, chunked audio playback with 150 ms debounce, and a bypass A/B comparison toggle.', features:['5 independent bands','Drag-on-plot controls','Live FFT overlay','Scroll-wheel Q','Bypass A/B','RBJ biquad DSP'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'qtgnn', name:'QTGNN Finance', tagline:'Quantum-Temporal GNN for stock price prediction', tags:['Python','GNN','Quantum','ML'], lang:'Python', langColor:'#3572A5', desc:'A hybrid Quantum-Temporal Graph Neural Network pipeline for stock price prediction. A custom QGATConv MessagePassing layer routes each message through a parameterised quantum circuit (Hardware-Efficient Ansatz with data re-uploading). A GRU temporal encoder captures short-term momentum and is fused with FinBERT sentiment embeddings. Zero data leakage via rolling-window graph construction. Evaluated with walk-forward cross-validation and annualised Sharpe ratio.', features:['Quantum graph attention','GRU temporal encoder','FinBERT sentiment','Walk-forward CV','Sharpe ratio eval','Next-day forecast'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'compressor', name:'Basic Compressor', tagline:'Dynamic range compressor VST3 plugin', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback through a live transfer curve graph and real-time input/output level meters calibrated from −60 dB to 0 dB.', features:['Threshold & ratio','Attack & release','Transfer curve display','I/O level meters','VST3 + Standalone','JUCE framework'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'limiter', name:'Basic Limiter', tagline:'Brickwall limiter with lock-free oscilloscope', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 brickwall limiter in C++17/JUCE. Linked-stereo peak detection with exponential release and hard-clip ceiling via juce::jlimit. Lock-free oscilloscope: pixel-window downsampling pushed to atomic-indexed circular buffers, read by the 60 Hz GUI timer. VU meters with analogue decay ballistics. Freeze toggle for inspection.', features:['Brickwall hard clip','Lock-free oscilloscope','Exponential release','Ceiling control','VU meters','Freeze mode'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'spectrum', name:'Spectrum Analyzer', tagline:'Real-time FFT analyzer with Bézier interpolation', tags:['C++','JUCE','FFT'], lang:'C++', langColor:'#f34b7d', desc:'A real-time spectrum analyzer VST3/Standalone built with C++/JUCE. Bézier-interpolated FFT curve with moving-average smoothing for a jitter-free display at 60 FPS. Analog-style stereo VU meters with smooth falloff ballistics and dynamic color coding. Stereo panning indicator for L/R balance monitoring.', features:['Bézier FFT curve','60 FPS rendering','Stereo VU meters','Panning indicator','Moving-avg smoothing','VST3 + Standalone'], github:'https://github.com/lluisestape-upc', dsp:true },
+];
+
+const SKILLS_DATA = {
+  dsp:   ['C++ / JUCE','MATLAB','IIR / FIR Filters','VST3 Plugins','FFT / Spectral','Audio Playback'],
+  ml:    ['Python','PyTorch / GNN','Quantum ML','FinBERT / NLP','Walk-Forward CV'],
+  tools: ['Git','Visual Studio','Projucer','Windows DSP'],
+};
+
+/* ── RENDER PROJECTS ── */
+const grid = document.getElementById('projects-grid');
+PROJECTS.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'project-card';
+  card.innerHTML = `
+    <div class="project-card-top">
+      <div class="project-lang-dot"><span style="width:8px;height:8px;border-radius:50%;background:${p.langColor};display:inline-block"></span>${p.lang}</div>
+      <span class="project-arrow">↗</span>
+    </div>
+    <div class="project-name">${p.name}</div>
+    <div class="project-tagline">${p.tagline}</div>
+    <div class="project-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+  `;
+  card.addEventListener('click', () => openModal(p));
+  grid.appendChild(card);
+});
+
+/* ── RENDER SKILLS ── */
+function renderSkills(id, items) {
+  const el = document.getElementById(id);
+  items.forEach((name, i) => {
+    const pill = document.createElement('span');
+    pill.className = 'skill-pill';
+    pill.textContent = name;
+    pill.style.transitionDelay = (i * 80) + 'ms';
+    el.appendChild(pill);
+  });
+}
+renderSkills('skills-dsp', SKILLS_DATA.dsp);
+renderSkills('skills-ml',  SKILLS_DATA.ml);
+renderSkills('skills-tools', SKILLS_DATA.tools);
+
+/* Animate pills on scroll */
+const skillsObserver = new IntersectionObserver(entries => {
+  if (entries[0].isIntersecting) {
+    document.querySelectorAll('.skill-pill').forEach(p => p.classList.add('visible'));
+    skillsObserver.disconnect();
+  }
+}, { threshold: 0.2 });
+skillsObserver.observe(document.getElementById('skills'));
+
+/* ── MODAL ── */
+let waveRaf;
+function openModal(p) {
+  const backdrop = document.getElementById('modal-backdrop');
+  const body = document.getElementById('modal-body');
+  body.innerHTML = `
+    <div style="font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:2px;margin-bottom:16px">${p.tags.join(' · ')}</div>
+    <h2 style="font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-0.5px">${p.name}</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">${p.tagline}</p>
+    ${p.dsp ? '<canvas id="modal-wave" height="44" style="width:100%;display:block;opacity:0.5;margin-bottom:20px"></canvas>' : ''}
+    <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:24px">${p.desc}</p>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">KEY FEATURES</div>
+    <div class="features-grid">${p.features.map(f=>`<div class="feature-item">${f}</div>`).join('')}</div>
+    <a href="${p.github}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:10px 20px;border:1px solid rgba(232,160,0,0.4);border-radius:6px;font-size:13px;font-family:var(--mono);color:var(--amber);background:var(--amber-soft)">View on GitHub ↗</a>
+  `;
+  backdrop.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (p.dsp) startMiniWave('modal-wave', '#4ecdc4');
+}
+function closeModal(e, force) {
+  if (!force && e && e.target !== document.getElementById('modal-backdrop')) return;
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  cancelAnimationFrame(waveRaf);
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(null, true); });
+
+/* ── WAVEFORMS ── */
+
+function startMiniWave(canvasId, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth * devicePixelRatio;
+  const ctx = canvas.getContext('2d');
+  let t = 0;
+  const draw = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.beginPath(); ctx.strokeStyle = color; ctx.lineWidth = 1.5 * devicePixelRatio;
+    const pts = 200, h = canvas.height;
+    for (let i = 0; i <= pts; i++) {
+      const x = (i/pts)*canvas.width, p = (i/pts)*Math.PI*8+t;
+      const y = h/2 + Math.sin(p)*10 + Math.sin(p*2.1+1)*4;
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke(); t += 0.03;
+    waveRaf = requestAnimationFrame(draw);
+  };
+  draw();
+}
+
+/* ── MIXER ── */
+(function() {
+  const N = 12;
+  const labels = ['20','60','120','250','500','1k','2k','4k','8k','12k','16k','20k'];
+  const wrap = document.getElementById('mixer-channels');
+
+  const tracks = [];
+  for (let i = 0; i < N; i++) {
+    const ch = document.createElement('div'); ch.className = 'mixer-ch';
+    const track = document.createElement('div'); track.className = 'mixer-track';
+    const fader = document.createElement('div'); fader.className = 'mixer-fader';
+    const label = document.createElement('div'); label.className = 'mixer-label'; label.textContent = labels[i];
+    track.appendChild(fader);
+    ch.appendChild(track); ch.appendChild(label);
+    wrap.appendChild(ch);
+    tracks.push({ track, fader });
+  }
+
+  // EQ curve: sum of a few very slow sine waves across the frequency axis
+  // Each sine has a different period over the N bands and shifts slowly over time
+  const eqWaves = [
+    { amp: 0.28, freqBand: 0.18, timeSpeed: 0.008, phase: 0.0 },
+    { amp: 0.18, freqBand: 0.42, timeSpeed: 0.005, phase: 1.2 },
+    { amp: 0.10, freqBand: 0.72, timeSpeed: 0.012, phase: 2.7 },
+  ];
+
+  let t = 0;
+  function tick() {
+    t += 0.016;
+    tracks.forEach(({ track, fader }, i) => {
+      const h = track.clientHeight - 10;
+      if (h <= 0) { requestAnimationFrame(tick); return; }
+      const xNorm = i / (N - 1); // 0..1 across bands
+      let v = 0.5; // center
+      eqWaves.forEach(w => {
+        v += Math.sin(xNorm * Math.PI * 2 * w.freqBand * N + t * w.timeSpeed * 60 + w.phase) * w.amp;
+      });
+      v = Math.max(0.04, Math.min(0.96, v));
+      fader.style.top = (v * h) + 'px';
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+/* ── MORPHING WAVE ── */
+function startMorphWave(canvasId, color) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const resize = () => { canvas.width = canvas.offsetWidth * devicePixelRatio; };
+  resize();
+  window.addEventListener('resize', resize);
+
+  const WAVES = ['sine','saw','square','triangle'];
+  const HOLD = 2800;    // ms to hold each shape
+  const MORPH = 1200;   // ms to morph between shapes
+  let waveIdx = 0, morphT = 0, lastTime = null, phase = 0;
+
+  // Sample a single waveform at normalised position x ∈ [0,1]
+  function sample(type, x) {
+    const p = (x * Math.PI * 2);  // one cycle
+    switch (type) {
+      case 'sine':     return Math.sin(p);
+      case 'saw':      return 1 - 2*(x % 1);
+      case 'square':   return Math.sin(p) >= 0 ? 1 : -1;
+      case 'triangle': return 1 - 4*Math.abs(Math.round(x) - x);
+    }
+  }
+
+  function draw(ts) {
+    if (!lastTime) lastTime = ts;
+    const dt = ts - lastTime;
+    lastTime = ts;
+
+    // advance phase
+    phase += dt * 0.0004;
+
+    // advance morph timer
+    morphT += dt;
+    const cycleLen = HOLD + MORPH;
+    if (morphT > cycleLen) { morphT -= cycleLen; waveIdx = (waveIdx + 1) % WAVES.length; }
+
+    // morph blend 0→1 during MORPH window at end of cycle
+    const inMorph = morphT > HOLD;
+    const blend = inMorph ? (morphT - HOLD) / MORPH : 0;
+    const fromWave = WAVES[waveIdx];
+    const toWave   = WAVES[(waveIdx + 1) % WAVES.length];
+
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5 * devicePixelRatio;
+
+    const pts = 300;
+    const cycles = 5;     // how many wave cycles to draw
+    const amp = h * 0.32;
+
+    for (let i = 0; i <= pts; i++) {
+      const xNorm = i / pts;
+      const x = xNorm * w;
+      const pos = (xNorm * cycles + phase) % 1;
+      const vFrom = sample(fromWave, pos);
+      const vTo   = sample(toWave, pos);
+      // ease blend
+      const e = blend < 0.5 ? 2*blend*blend : 1-Math.pow(-2*blend+2,2)/2;
+      const v = vFrom * (1 - e) + vTo * e;
+      const y = h/2 - v * amp;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+}
+window.addEventListener('load', () => startMorphWave('hero-wave', '#e8a000'));
+
+/* ── BURGER ── */
+const burger = document.getElementById('burger');
+const overlay = document.getElementById('overlay');
+let menuOpen = false;
+burger.addEventListener('click', () => {
+  menuOpen = !menuOpen;
+  burger.classList.toggle('open', menuOpen);
+  overlay.classList.toggle('open', menuOpen);
+  document.body.style.overflow = menuOpen ? 'hidden' : '';
+});
+
+function navTo(id) {
+  menuOpen = false;
+  burger.classList.remove('open');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  setTimeout(() => document.getElementById(id).scrollIntoView({ behavior: 'smooth' }), 300);
+}
+
+
+/* ── TITLE ANIMATIONS ── */
+const titleObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('anim-in'); });
+}, { threshold: 0.3 });
+document.querySelectorAll('.section-header').forEach(h => titleObserver.observe(h));
+
+/* ── SPECTRUM ANALYZER ── */
+(function() {
+  const canvas = document.getElementById('spectrum-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const resize = () => { canvas.width = canvas.offsetWidth * devicePixelRatio; };
+  resize(); window.addEventListener('resize', resize);
+  const N = 48;
+  // EQ-like spectrum: smooth curve with slow evolution
+  const bands = Array.from({length: N}, (_, i) => ({
+    phase: i * 0.31 + Math.random() * 2,
+    speed: 0.3 + Math.random() * 0.4,
+    base: 0.15 + Math.pow(Math.sin((i/N) * Math.PI), 1.2) * 0.65,
+  }));
+  let t = 0;
+  function drawSpectrum() {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    const bw = w / N * 0.7;
+    const gap = w / N;
+    const grad = ctx.createLinearGradient(0, h, 0, 0);
+    grad.addColorStop(0, 'rgba(232,160,0,0.9)');
+    grad.addColorStop(0.6, 'rgba(78,205,196,0.7)');
+    grad.addColorStop(1, 'rgba(78,205,196,0.2)');
+    bands.forEach((b, i) => {
+      const noise = Math.sin(t * b.speed + b.phase) * 0.12 + Math.sin(t * b.speed * 1.7 + b.phase * 0.5) * 0.06;
+      const v = Math.max(0.04, Math.min(0.98, b.base + noise));
+      const barH = v * h * 0.92;
+      const x = i * gap + (gap - bw) / 2;
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.roundRect(x, h - barH, bw, barH, [2, 2, 0, 0]);
+      ctx.fill();
+    });
+    t += 0.016;
+    requestAnimationFrame(drawSpectrum);
+  }
+  drawSpectrum();
+})();
+
+/* ── PIANO ROLL ── */
+(function() {
+  const canvas = document.getElementById('piano-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const resize = () => { canvas.width = canvas.offsetWidth * devicePixelRatio; };
+  resize(); window.addEventListener('resize', resize);
+  const ROWS = 16, SCROLL_SPEED = 0.4;
+  const rowH = () => canvas.height / ROWS;
+  // Generate notes: {row, start, len, color}
+  const COLORS = ['rgba(232,160,0,0.85)','rgba(78,205,196,0.7)','rgba(188,140,255,0.65)','rgba(86,211,100,0.6)'];
+  const notes = [];
+  for (let i = 0; i < 60; i++) {
+    notes.push({
+      row: Math.floor(Math.random() * ROWS),
+      start: Math.random() * 800,
+      len: 40 + Math.random() * 140,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+    });
+  }
+  let offset = 0;
+  function drawPiano() {
+    const w = canvas.width, h = canvas.height;
+    const rh = h / ROWS;
+    ctx.clearRect(0, 0, w, h);
+    // Grid
+    for (let r = 0; r < ROWS; r++) {
+      ctx.fillStyle = r % 2 === 0 ? 'rgba(255,255,255,0.018)' : 'transparent';
+      ctx.fillRect(0, r * rh, w, rh);
+    }
+    // Beat lines
+    const beatW = w / 8;
+    for (let b = 0; b < 9; b++) {
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.fillRect(b * beatW, 0, 1, h);
+    }
+    // Notes
+    notes.forEach(n => {
+      const x = n.start - offset;
+      const xWrapped = ((x % (w + n.len + 200)) + (w + n.len + 200)) % (w + n.len + 200) - n.len;
+      if (xWrapped > w) return;
+      const y = n.row * rh + 1;
+      const drawW = Math.min(n.len * devicePixelRatio, w - xWrapped);
+      ctx.fillStyle = n.color;
+      ctx.beginPath();
+      ctx.roundRect(xWrapped, y, n.len, rh - 2, 2);
+      ctx.fill();
+    });
+    offset += SCROLL_SPEED * devicePixelRatio;
+    requestAnimationFrame(drawPiano);
+  }
+  drawPiano();
+})();
+
+/* ── VU METERS ── */
+(function() {
+  const canvas = document.getElementById('vu-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const resize = () => { canvas.width = canvas.offsetWidth * devicePixelRatio; };
+  resize(); window.addEventListener('resize', resize);
+  const CH = ['L','R','C','LFE','LS','RS','SL','SR'];
+  const phases = CH.map((_, i) => i * 0.8 + Math.random());
+  const speeds = CH.map(() => 0.4 + Math.random() * 0.3);
+  let t = 0;
+  function drawVU() {
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    const n = CH.length;
+    const meterW = Math.min(32, w / n / 2) * devicePixelRatio;
+    const spacing = w / n;
+    const meterH = h * 0.78;
+    const top = h * 0.06;
+    const segs = 20;
+    const segH = meterH / segs;
+
+    CH.forEach((label, i) => {
+      const cx = spacing * i + spacing / 2;
+      // Level: slow sine
+      const lv = Math.max(0.05, Math.min(0.98, 0.55 + Math.sin(t * speeds[i] + phases[i]) * 0.3 + Math.sin(t * speeds[i] * 1.9 + phases[i]) * 0.1));
+      const litSegs = Math.round(lv * segs);
+      // Draw segments bottom to top
+      for (let s = 0; s < segs; s++) {
+        const sy = top + meterH - (s + 1) * segH + 1;
+        const lit = s < litSegs;
+        let col;
+        if (s >= segs - 2) col = lit ? 'rgba(255,80,80,0.9)' : 'rgba(255,80,80,0.08)';
+        else if (s >= segs - 5) col = lit ? 'rgba(232,160,0,0.9)' : 'rgba(232,160,0,0.08)';
+        else col = lit ? 'rgba(78,205,196,0.85)' : 'rgba(78,205,196,0.07)';
+        ctx.fillStyle = col;
+        ctx.beginPath();
+        ctx.roundRect(cx - meterW/2, sy, meterW, segH - 2, 1);
+        ctx.fill();
+      }
+      // Label
+      ctx.fillStyle = 'rgba(107,107,132,0.8)';
+      ctx.font = `${9 * devicePixelRatio}px "JetBrains Mono", monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(label, cx, top + meterH + 14 * devicePixelRatio);
+    });
+    t += 0.016;
+    requestAnimationFrame(drawVU);
+  }
+  drawVU();
+})();
+
+</script>
+</body>
+</html>

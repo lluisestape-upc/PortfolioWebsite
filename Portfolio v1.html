@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lluís Estapé — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0d1117;
+  --sidebar: #161b22;
+  --header: #161b22;
+  --border: #30363d;
+  --border-light: #21262d;
+  --text: #c9d1d9;
+  --muted: #8b949e;
+  --amber: #e8a000;
+  --amber-dim: rgba(232,160,0,0.12);
+  --teal: #4ecdc4;
+  --teal-dim: rgba(78,205,196,0.1);
+  --red: #ff6b6b;
+  --green: #56d364;
+  --purple: #bc8cff;
+  --blue: #79c0ff;
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Sora', sans-serif;
+}
+html, body, #root { height: 100%; }
+body { background: var(--bg); color: var(--text); font-family: var(--mono); overflow: hidden; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+a { color: inherit; text-decoration: none; }
+
+/* Fade-in */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fadeIn 0.25s ease forwards; }
+
+/* Waveform */
+@keyframes wave { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(0.3); } }
+
+/* Cursor blink */
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+.cursor { display: inline-block; width: 8px; height: 16px; background: var(--amber); vertical-align: middle; animation: blink 1.1s step-end infinite; margin-left: 2px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect, useCallback } = React;
+
+/* ── DATA ── */
+const PROJECTS = [
+  {
+    id: 'synth',
+    file: 'Synth1_0.md',
+    name: 'Synth 1.0',
+    tagline: 'Polyphonic wavetable VST3 synthesizer',
+    tags: ['C++', 'JUCE', 'DSP', 'VST3'],
+    desc: 'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync/Bend/PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine, 3-band interactive EQ with FFT overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Reverb). Custom LookAndFeel with arc-style rotary knobs.',
+    lang: 'C++',
+    langColor: '#f34b7d',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['16-voice polyphony', 'Wavetable morphing', '4 warp modes', 'LFO → Filter/Pitch', 'FX rack', 'Preset system'],
+  },
+  {
+    id: 'eq',
+    file: 'MatlabParametricEQ.md',
+    name: 'Matlab Parametric EQ',
+    tagline: '5-band parametric equalizer with live FFT',
+    tags: ['MATLAB', 'DSP', 'IIR', 'Audio'],
+    desc: 'A 5-band parametric EQ built with MATLAB uifigure. Each band supports Peaking, High-Pass, and Low-Pass topologies via biquad (RBJ Cookbook) filters. Features drag-on-plot frequency/gain control, scroll-wheel Q, live FFT spectrum overlay, chunked audio playback with 150 ms debounce, and a bypass A/B toggle.',
+    lang: 'MATLAB',
+    langColor: '#e8a000',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['5 independent bands', 'Drag-on-plot controls', 'Live FFT overlay', 'Scroll-wheel Q', 'Bypass A/B', 'RBJ biquad DSP'],
+  },
+  {
+    id: 'qtgnn',
+    file: 'QTGNN_Finance.md',
+    name: 'QTGNN Finance',
+    tagline: 'Quantum-Temporal GNN for stock prediction',
+    tags: ['Python', 'GNN', 'Quantum', 'FinBERT', 'ML'],
+    desc: 'A hybrid Quantum-Temporal Graph Neural Network pipeline for stock price prediction. Custom QGATConv MessagePassing layer routes each message through a parameterised quantum circuit (HEA, data re-uploading). GRU temporal encoder fused with FinBERT sentiment embeddings. Zero data leakage via rolling-window graph construction. Evaluated with walk-forward cross-validation and annualised Sharpe ratio.',
+    lang: 'Python',
+    langColor: '#3572A5',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['Quantum graph attention', 'GRU temporal encoder', 'FinBERT sentiment', 'Walk-forward CV', 'Sharpe evaluation', 'Next-day forecast'],
+  },
+  {
+    id: 'compressor',
+    file: 'BasicCompressor.md',
+    name: 'Basic Compressor',
+    tagline: 'Dynamic range compressor VST3 plugin',
+    tags: ['C++', 'JUCE', 'VST3', 'DSP'],
+    desc: 'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback via a live transfer curve and real-time input/output level meters calibrated from −60 dB to 0 dB.',
+    lang: 'C++',
+    langColor: '#f34b7d',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['Threshold & ratio', 'Attack & release', 'Transfer curve display', 'I/O level meters', 'VST3 + Standalone', 'JUCE framework'],
+  },
+  {
+    id: 'limiter',
+    file: 'BasicLimiter.md',
+    name: 'Basic Limiter',
+    tagline: 'Brickwall limiter with lock-free oscilloscope',
+    tags: ['C++', 'JUCE', 'VST3', 'DSP'],
+    desc: 'A VST3 brickwall limiter in C++17/JUCE. Linked-stereo peak detection with exponential release, hard-clip ceiling via juce::jlimit. Lock-free oscilloscope: downsampled pixel windows pushed to atomic-indexed circular buffers, read by the 60 Hz GUI timer. VU meters with analogue decay ballistics. Freeze toggle for inspection.',
+    lang: 'C++',
+    langColor: '#f34b7d',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['Brickwall hard clip', 'Lock-free oscilloscope', 'Exponential release', 'Ceiling control', 'VU meters', 'Freeze mode'],
+  },
+  {
+    id: 'spectrum',
+    file: 'SpectrumAnalyzer.md',
+    name: 'Spectrum Analyzer',
+    tagline: 'Real-time FFT analyzer with Bézier interpolation',
+    tags: ['C++', 'JUCE', 'FFT', 'VST3'],
+    desc: 'A real-time spectrum analyzer VST3/Standalone built with C++/JUCE. Bézier-interpolated FFT curve with moving-average smoothing for jitter-free display at 60 FPS. Analog-style stereo VU meters with smooth falloff ballistics and dynamic color coding. Stereo panning indicator for L/R balance monitoring.',
+    lang: 'C++',
+    langColor: '#f34b7d',
+    github: 'https://github.com/lluisestape-upc',
+    features: ['Bézier FFT curve', '60 FPS rendering', 'Stereo VU meters', 'Panning indicator', 'Moving-avg smoothing', 'VST3 + Standalone'],
+  },
+];
+
+const SKILLS = {
+  "audio_dsp": ["C++", "JUCE Framework", "MATLAB", "IIR / FIR Filters", "FFT", "VST3 / Standalone"],
+  "machine_learning": ["Python", "PyTorch", "Graph Neural Networks", "Quantum ML", "FinBERT / NLP"],
+  "tools": ["Git", "Visual Studio 2022", "Projucer", "Windows"],
+  "languages": { "native": ["Spanish", "Catalan"], "professional": ["English"], "basic": ["French"] }
+};
+
+/* ── WAVEFORM CANVAS ── */
+function WaveCanvas({ width = 300, height = 48, color = 'var(--amber)', animate = true }) {
+  const ref = useRef();
+  const raf = useRef();
+  const t = useRef(0);
+  useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.beginPath();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      const pts = 120;
+      for (let i = 0; i <= pts; i++) {
+        const x = (i / pts) * canvas.width;
+        const phase = (i / pts) * Math.PI * 6 + t.current;
+        const y = canvas.height / 2 + Math.sin(phase) * 14 + Math.sin(phase * 2.1 + 1) * 5 + Math.sin(phase * 0.4) * 8;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      if (animate) { t.current += 0.03; raf.current = requestAnimationFrame(draw); }
+    };
+    draw();
+    return () => cancelAnimationFrame(raf.current);
+  }, [color, animate]);
+  return <canvas ref={ref} width={width} height={height} style={{ display: 'block', width: '100%', height }} />;
+}
+
+/* ── TAG CHIP ── */
+function Tag({ label, color }) {
+  const colors = { 'C++': '#f34b7d', 'Python': '#3572A5', 'MATLAB': '#e8a000', 'JUCE': '#4ecdc4', 'DSP': '#8b949e', 'VST3': '#bc8cff', 'FFT': '#56d364', 'ML': '#79c0ff', 'GNN': '#79c0ff', 'Quantum': '#bc8cff', 'FinBERT': '#56d364', 'IIR': '#8b949e', 'Audio': '#4ecdc4', 'NLP': '#79c0ff' };
+  const c = color || colors[label] || '#8b949e';
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, padding: '2px 8px', border: `1px solid ${c}33`, background: `${c}11`, borderRadius: 4, fontFamily: 'var(--mono)', fontSize: 11, color: c }}>
+      <span style={{ width: 6, height: 6, borderRadius: '50%', background: c, flexShrink: 0 }} />
+      {label}
+    </span>
+  );
+}
+
+/* ── SYNTAX LINE ── */
+function SynLine({ n, children }) {
+  return (
+    <div style={{ display: 'flex', minHeight: 22 }}>
+      <span style={{ width: 40, flexShrink: 0, textAlign: 'right', paddingRight: 16, color: '#3d444d', fontSize: 12, lineHeight: '22px', userSelect: 'none' }}>{n}</span>
+      <span style={{ flex: 1, fontSize: 13, lineHeight: '22px' }}>{children}</span>
+    </div>
+  );
+}
+const K = ({ c }) => <span style={{ color: 'var(--purple)' }}>{c}</span>;
+const S = ({ c }) => <span style={{ color: 'var(--green)' }}>"{c}"</span>;
+const N = ({ c }) => <span style={{ color: '#79c0ff' }}>{c}</span>;
+const Cm = ({ c }) => <span style={{ color: 'var(--muted)' }}>{c}</span>;
+
+/* ── VIEWS ── */
+
+function ReadmeView() {
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px', maxWidth: 760, lineHeight: 1.7 }}>
+      {/* Header comment block */}
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--muted)', marginBottom: 24 }}>
+          <div style={{ color: '#3d444d' }}>{'/**'}</div>
+          <div style={{ color: 'var(--muted)' }}>&nbsp;* <span style={{ color: 'var(--teal)' }}>@author</span> Lluís Estapé</div>
+          <div style={{ color: 'var(--muted)' }}>&nbsp;* <span style={{ color: 'var(--teal)' }}>@role</span>&nbsp;&nbsp; Audio DSP Engineer · ML Researcher</div>
+          <div style={{ color: 'var(--muted)' }}>&nbsp;* <span style={{ color: 'var(--teal)' }}>@edu</span>&nbsp;&nbsp;&nbsp; Telecommunications Engineering, UPC TelecomBCN</div>
+          <div style={{ color: 'var(--muted)' }}>&nbsp;* <span style={{ color: 'var(--teal)' }}>@loc</span>&nbsp;&nbsp;&nbsp; Barcelona, Spain</div>
+          <div style={{ color: '#3d444d' }}>&nbsp;{'*/'}</div>
+        </div>
+        <h1 style={{ fontFamily: 'var(--sans)', fontSize: 42, fontWeight: 700, color: '#fff', letterSpacing: -1, lineHeight: 1.1, marginBottom: 12 }}>
+          Lluís Estapé
+        </h1>
+        <div style={{ fontFamily: 'var(--sans)', fontSize: 17, color: 'var(--muted)', marginBottom: 24 }}>
+          Building audio tools in C++ and researching ML systems at the edge of signal and intelligence.
+        </div>
+        <WaveCanvas height={40} />
+      </div>
+
+      {/* About */}
+      <div style={{ marginBottom: 32 }}>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', marginBottom: 12, letterSpacing: 1 }}># ABOUT</div>
+        <p style={{ fontFamily: 'var(--sans)', fontSize: 15, color: 'var(--text)', lineHeight: 1.75 }}>
+          Telecommunications Engineering student at <span style={{ color: 'var(--amber)' }}>UPC TelecomBCN</span> with a strong focus on Audio and Video Signal Processing. I design and build VST3 plugins in C++/JUCE, DSP tools in MATLAB, and ML systems that operate at the intersection of quantum computing and financial data.
+        </p>
+        <p style={{ fontFamily: 'var(--sans)', fontSize: 15, color: 'var(--text)', lineHeight: 1.75, marginTop: 12 }}>
+          Outside engineering, I'm a music producer on <a href="https://www.beatstars.com/estapebeatz" target="_blank" style={{ color: 'var(--teal)' }}>BeatStars</a>, a handball player, and have worked in film production and cybersecurity consulting at <span style={{ color: 'var(--amber)' }}>Deloitte</span>.
+        </p>
+      </div>
+
+      {/* Quick links */}
+      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+        {[
+          { label: '⌥ GitHub', href: 'https://github.com/lluisestape-upc', col: 'var(--text)' },
+          { label: '◈ LinkedIn', href: 'https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309', col: 'var(--blue)' },
+          { label: '♪ BeatStars', href: 'https://www.beatstars.com/estapebeatz', col: 'var(--teal)' },
+        ].map(({ label, href, col }) => (
+          <a key={label} href={href} target="_blank" style={{ padding: '6px 14px', border: `1px solid var(--border)`, borderRadius: 4, fontFamily: 'var(--mono)', fontSize: 12, color: col, background: 'var(--border-light)', transition: 'border-color 0.15s' }}>{label}</a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectListView({ onOpen }) {
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px' }}>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', marginBottom: 8, letterSpacing: 1 }}># PROJECTS</div>
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 26, fontWeight: 700, color: '#fff', marginBottom: 8 }}>6 projects</div>
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--muted)', marginBottom: 32 }}>Click any file to open it in the editor ↗</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+        {PROJECTS.map(p => (
+          <div key={p.id} onClick={() => onOpen(p.id)} style={{ border: '1px solid var(--border)', borderRadius: 6, padding: '16px 20px', cursor: 'pointer', background: 'var(--sidebar)', transition: 'border-color 0.15s, background 0.15s' }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--amber)'; e.currentTarget.style.background = 'var(--amber-dim)'; }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.background = 'var(--sidebar)'; }}>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 15, fontWeight: 600, color: '#fff', marginBottom: 6 }}>{p.name}</div>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 12, color: 'var(--muted)', marginBottom: 12, lineHeight: 1.5 }}>{p.tagline}</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {p.tags.slice(0,3).map(t => <Tag key={t} label={t} />)}
+            </div>
+            <div style={{ marginTop: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: p.langColor, flexShrink: 0 }} />
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)' }}>{p.lang}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProjectView({ id }) {
+  const p = PROJECTS.find(x => x.id === id);
+  if (!p) return null;
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px', maxWidth: 760 }}>
+      {/* Breadcrumb */}
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)', marginBottom: 24 }}>
+        projects / <span style={{ color: 'var(--amber)' }}>{p.file}</span>
+      </div>
+      {/* Title */}
+      <h2 style={{ fontFamily: 'var(--sans)', fontSize: 32, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{p.name}</h2>
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 15, color: 'var(--muted)', marginBottom: 20 }}>{p.tagline}</div>
+      {/* Tags */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 28 }}>
+        {p.tags.map(t => <Tag key={t} label={t} />)}
+      </div>
+      {/* Waveform for audio projects */}
+      {(p.tags.includes('DSP') || p.tags.includes('FFT')) && (
+        <div style={{ marginBottom: 28, border: '1px solid var(--border)', borderRadius: 6, padding: '12px 16px', background: 'var(--border-light)' }}>
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--muted)', marginBottom: 8 }}>// signal preview</div>
+          <WaveCanvas height={44} color="var(--teal)" />
+        </div>
+      )}
+      {/* Description */}
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--text)', lineHeight: 1.8, marginBottom: 28 }}>{p.desc}</div>
+      {/* Features */}
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)', marginBottom: 12 }}>// key features</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+          {p.features.map(f => (
+            <div key={f} style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ color: 'var(--amber)', fontSize: 10 }}>▸</span>{f}
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* GitHub link */}
+      <a href={p.github} target="_blank" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 18px', border: '1px solid var(--amber)', borderRadius: 4, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', background: 'var(--amber-dim)' }}>
+        ⌥ View on GitHub
+      </a>
+    </div>
+  );
+}
+
+function SkillsView() {
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px', maxWidth: 680 }}>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', marginBottom: 24, letterSpacing: 1 }}>// skills.json</div>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 13, lineHeight: 1.75 }}>
+        <SynLine n={1}><span style={{ color: 'var(--text)' }}>{'{'}</span></SynLine>
+        <SynLine n={2}>&nbsp;&nbsp;<S c="audio_dsp" />: <span style={{ color: 'var(--text)' }}>[</span></SynLine>
+        {SKILLS.audio_dsp.map((s, i) => <SynLine key={s} n={3+i}>&nbsp;&nbsp;&nbsp;&nbsp;<S c={s} />{i < SKILLS.audio_dsp.length-1 ? ',' : ''}</SynLine>)}
+        <SynLine n={9}>&nbsp;&nbsp;<span style={{ color: 'var(--text)' }}>],</span></SynLine>
+        <SynLine n={10}>&nbsp;&nbsp;<S c="machine_learning" />: <span style={{ color: 'var(--text)' }}>[</span></SynLine>
+        {SKILLS.machine_learning.map((s, i) => <SynLine key={s} n={11+i}>&nbsp;&nbsp;&nbsp;&nbsp;<S c={s} />{i < SKILLS.machine_learning.length-1 ? ',' : ''}</SynLine>)}
+        <SynLine n={16}>&nbsp;&nbsp;<span style={{ color: 'var(--text)' }}>],</span></SynLine>
+        <SynLine n={17}>&nbsp;&nbsp;<S c="tools" />: <span style={{ color: 'var(--text)' }}>[</span></SynLine>
+        {SKILLS.tools.map((s, i) => <SynLine key={s} n={18+i}>&nbsp;&nbsp;&nbsp;&nbsp;<S c={s} />{i < SKILLS.tools.length-1 ? ',' : ''}</SynLine>)}
+        <SynLine n={22}>&nbsp;&nbsp;<span style={{ color: 'var(--text)' }}>],</span></SynLine>
+        <SynLine n={23}>&nbsp;&nbsp;<S c="languages" />: {'{'}</SynLine>
+        <SynLine n={24}>&nbsp;&nbsp;&nbsp;&nbsp;<S c="native" />: [<S c="Spanish" />, <S c="Catalan" />],</SynLine>
+        <SynLine n={25}>&nbsp;&nbsp;&nbsp;&nbsp;<S c="professional" />: [<S c="English" />],</SynLine>
+        <SynLine n={26}>&nbsp;&nbsp;&nbsp;&nbsp;<S c="basic" />: [<S c="French" />]</SynLine>
+        <SynLine n={27}>&nbsp;&nbsp;{'}'}</SynLine>
+        <SynLine n={28}><span style={{ color: 'var(--text)' }}>{'}'}</span></SynLine>
+      </div>
+    </div>
+  );
+}
+
+function ContactView() {
+  const [sent, setSent] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', msg: '' });
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px', maxWidth: 620 }}>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', marginBottom: 24, letterSpacing: 1 }}>// contact.txt</div>
+      {!sent ? (
+        <>
+          <div style={{ marginBottom: 28 }}>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 22, fontWeight: 600, color: '#fff', marginBottom: 8 }}>Get in touch</div>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--muted)' }}>Reach out for internships, collaborations, or audio DSP projects.</div>
+          </div>
+          {/* Direct links */}
+          <div style={{ marginBottom: 28, display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {[
+              { icon: '✉', label: 'lluis.estape@estudiantat.upc.edu', href: 'mailto:lluis.estape@estudiantat.upc.edu', col: 'var(--text)' },
+              { icon: '⌥', label: 'github.com/lluisestape-upc', href: 'https://github.com/lluisestape-upc', col: 'var(--teal)' },
+              { icon: '◈', label: 'linkedin.com/in/lluís-estapé', href: 'https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309', col: 'var(--blue)' },
+            ].map(({ icon, label, href, col }) => (
+              <a key={label} href={href} target="_blank" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 14px', border: '1px solid var(--border)', borderRadius: 4, background: 'var(--border-light)', color: col, fontFamily: 'var(--mono)', fontSize: 12 }}>
+                <span>{icon}</span><span>{label}</span>
+              </a>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 14, color: 'var(--green)' }}>
+          <div>{'>'} message sent. <span className="cursor" /></div>
+          <div style={{ marginTop: 8, color: 'var(--muted)' }}>{'>'} I'll get back to you soon.</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ResumeView() {
+  return (
+    <div className="fade-in" style={{ padding: '40px 48px', maxWidth: 560 }}>
+      <div style={{ fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', marginBottom: 24, letterSpacing: 1 }}>// resume.pdf</div>
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 22, fontWeight: 600, color: '#fff', marginBottom: 8 }}>Curriculum Vitae</div>
+      <div style={{ fontFamily: 'var(--sans)', fontSize: 14, color: 'var(--muted)', marginBottom: 32, lineHeight: 1.6 }}>
+        Lluís Estapé — Telecommunications Engineering, UPC TelecomBCN<br/>
+        Audio DSP · ML · C++ · JUCE · MATLAB · Python
+      </div>
+      <div style={{ border: '1px solid var(--border)', borderRadius: 6, padding: '20px 24px', background: 'var(--border-light)', marginBottom: 24 }}>
+        <div style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)', marginBottom: 12 }}>// recent experience</div>
+        {[
+          { role: 'Cybersecurity Strategy Consultant', org: 'Deloitte', period: 'Feb 2026 – present' },
+          { role: 'Production Assistant', org: 'Arcadia Motion Pictures', period: 'Jun – Aug 2025' },
+          { role: 'Production Assistant', org: 'Mundo Cero', period: 'Jul – Sep 2024' },
+          { role: 'MWC Exhibition Staff', org: 'NTT Docomo', period: '2025' },
+        ].map(({ role, org, period }) => (
+          <div key={role} style={{ marginBottom: 14, paddingBottom: 14, borderBottom: '1px solid var(--border)' }}>
+            <div style={{ fontFamily: 'var(--sans)', fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>{role}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--amber)' }}>{org}</span>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)' }}>{period}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <a href="uploads/CV_2026.pdf" download style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 20px', border: '1px solid var(--amber)', borderRadius: 4, fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--amber)', background: 'var(--amber-dim)', cursor: 'pointer' }}>
+        ↓ Download CV (PDF)
+      </a>
+    </div>
+  );
+}
+
+/* ── SIDEBAR ── */
+function Sidebar({ active, onSelect }) {
+  const [projectsOpen, setProjectsOpen] = useState(true);
+  return (
+    <div style={{ width: 220, flexShrink: 0, background: 'var(--sidebar)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Explorer header */}
+      <div style={{ padding: '10px 14px 6px', fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--muted)', letterSpacing: 1, borderBottom: '1px solid var(--border-light)', flexShrink: 0 }}>EXPLORER</div>
+      <div style={{ flex: 1, overflowY: 'auto', padding: '6px 0' }}>
+        {/* Top-level files */}
+        {[
+          { id: 'readme', label: 'README.md', icon: '📄', col: '#e8a000' },
+          { id: 'skills', label: 'skills.json', icon: '{}', col: 'var(--green)', mono: true },
+          { id: 'contact', label: 'contact.txt', icon: '✉', col: 'var(--teal)' },
+          { id: 'resume', label: 'resume.pdf', icon: '↓', col: 'var(--red)' },
+        ].map(({ id, label, icon, col, mono }) => (
+          <FileRow key={id} label={label} icon={icon} col={col} mono={mono} active={active === id} onClick={() => onSelect(id)} depth={0} />
+        ))}
+
+        {/* Projects folder */}
+        <div onClick={() => setProjectsOpen(o => !o)} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 14px', cursor: 'pointer', fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--muted)' }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--border-light)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+          <span style={{ fontSize: 10, transition: 'transform 0.15s', display: 'inline-block', transform: projectsOpen ? 'rotate(90deg)' : 'none' }}>▶</span>
+          <span>projects/</span>
+          <span style={{ marginLeft: 'auto', fontSize: 10, background: 'var(--border)', padding: '1px 5px', borderRadius: 8, color: 'var(--muted)' }}>{PROJECTS.length}</span>
+        </div>
+        {projectsOpen && PROJECTS.map(p => (
+          <FileRow key={p.id} label={p.file} icon="." col={p.langColor} active={active === `proj:${p.id}`} onClick={() => onSelect(`proj:${p.id}`)} depth={1} />
+        ))}
+      </div>
+      {/* Git branch */}
+      <div style={{ padding: '8px 14px', borderTop: '1px solid var(--border)', fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--muted)', flexShrink: 0 }}>
+        ⎇&nbsp; main &nbsp;·&nbsp; <span style={{ color: 'var(--green)' }}>✓ up to date</span>
+      </div>
+    </div>
+  );
+}
+
+function FileRow({ label, icon, col, mono, active, onClick, depth }) {
+  return (
+    <div onClick={onClick} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: `3px 14px 3px ${14 + depth * 16}px`, cursor: 'pointer', background: active ? 'rgba(232,160,0,0.08)' : 'transparent', borderLeft: active ? '2px solid var(--amber)' : '2px solid transparent', transition: 'background 0.1s' }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'var(--border-light)'; }}
+      onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}>
+      <span style={{ color: col, fontFamily: mono ? 'var(--mono)' : 'inherit', fontSize: mono ? 11 : 13, flexShrink: 0, width: 14, textAlign: 'center' }}>{icon}</span>
+      <span style={{ fontFamily: 'var(--mono)', fontSize: 12, color: active ? '#fff' : 'var(--muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>
+    </div>
+  );
+}
+
+/* ── TAB BAR ── */
+function TabBar({ tabs, active, onSelect, onClose }) {
+  return (
+    <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', background: 'var(--header)', overflowX: 'auto', flexShrink: 0 }}>
+      {tabs.map(t => {
+        const isActive = t.id === active;
+        return (
+          <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 16px', borderRight: '1px solid var(--border)', background: isActive ? 'var(--bg)' : 'transparent', borderBottom: isActive ? '1px solid var(--bg)' : 'none', marginBottom: isActive ? -1 : 0, cursor: 'pointer', flexShrink: 0 }}
+            onClick={() => onSelect(t.id)}>
+            <span style={{ fontFamily: 'var(--mono)', fontSize: 12, color: isActive ? '#fff' : 'var(--muted)', whiteSpace: 'nowrap' }}>{t.label}</span>
+            <span onClick={e => { e.stopPropagation(); onClose(t.id); }} style={{ color: 'var(--muted)', fontSize: 12, lineHeight: 1, padding: '0 2px', borderRadius: 3 }}
+              onMouseEnter={e => e.currentTarget.style.color = '#fff'}
+              onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>×</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ── BURGER MENU ── */
+function BurgerMenu({ onNav }) {
+  const [open, setOpen] = useState(false);
+  const navItems = [
+    { id: 'readme', label: 'README.md' },
+    { id: 'projects', label: 'projects/' },
+    { id: 'skills', label: 'skills.json' },
+    { id: 'contact', label: 'contact.txt' },
+    { id: 'resume', label: 'resume.pdf' },
+  ];
+  return (
+    <div style={{ position: 'relative' }}>
+      <div onClick={() => setOpen(o => !o)} style={{ width: 32, height: 32, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5, cursor: 'pointer', padding: 6 }}>
+        <div style={{ width: '100%', height: 1.5, background: open ? 'var(--amber)' : 'var(--muted)', transition: 'all 0.2s', transform: open ? 'rotate(45deg) translate(0, 4px)' : 'none' }} />
+        <div style={{ width: '100%', height: 1.5, background: open ? 'transparent' : 'var(--muted)', transition: 'all 0.2s' }} />
+        <div style={{ width: '100%', height: 1.5, background: open ? 'var(--amber)' : 'var(--muted)', transition: 'all 0.2s', transform: open ? 'rotate(-45deg) translate(0, -4px)' : 'none' }} />
+      </div>
+      {open && (
+        <div style={{ position: 'absolute', top: 38, right: 0, width: 200, background: 'var(--sidebar)', border: '1px solid var(--amber)', zIndex: 999, borderRadius: 4, overflow: 'hidden' }}>
+          <div style={{ fontFamily: 'var(--mono)', fontSize: 10, color: 'var(--muted)', padding: '8px 14px 4px', letterSpacing: 1 }}>NAVIGATE</div>
+          {navItems.map((n, i) => (
+            <div key={n.id} onClick={() => { onNav(n.id); setOpen(false); }} style={{ padding: '8px 14px', fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--muted)', borderTop: '1px solid var(--border)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10 }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--amber-dim)'; e.currentTarget.style.color = 'var(--amber)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--muted)'; }}>
+              <span style={{ color: 'var(--border)', fontSize: 10 }}>{String(i+1).padStart(2,'0')}</span>
+              {n.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── MINIMAP ── */
+function Minimap() {
+  return (
+    <div style={{ width: 52, background: '#0a0d12', borderLeft: '1px solid var(--border)', flexShrink: 0, padding: '8px 6px', overflowY: 'hidden' }}>
+      {[...Array(28)].map((_, i) => (
+        <div key={i} style={{ height: 3, marginBottom: 2, borderRadius: 1, background: i % 5 === 0 ? '#21262d' : '#161b22', width: i % 3 === 0 ? '90%' : i % 2 === 0 ? '60%' : '75%' }} />
+      ))}
+    </div>
+  );
+}
+
+/* ── APP ── */
+const FILE_LABELS = {
+  readme: 'README.md',
+  projects: 'projects/',
+  skills: 'skills.json',
+  contact: 'contact.txt',
+  resume: 'resume.pdf',
+  ...Object.fromEntries(PROJECTS.map(p => [`proj:${p.id}`, p.file])),
+};
+
+function App() {
+  const [tabs, setTabs] = useState([{ id: 'readme', label: 'README.md' }]);
+  const [active, setActive] = useState('readme');
+
+  const openTab = useCallback((id) => {
+    const label = FILE_LABELS[id] || id;
+    // If it's "projects" shortcut, open the list view
+    const tabId = id === 'projects' ? 'projects' : id;
+    setTabs(prev => prev.find(t => t.id === tabId) ? prev : [...prev, { id: tabId, label }]);
+    setActive(tabId);
+  }, []);
+
+  const closeTab = useCallback((id) => {
+    setTabs(prev => {
+      const next = prev.filter(t => t.id !== id);
+      if (active === id && next.length > 0) setActive(next[next.length - 1].id);
+      return next;
+    });
+  }, [active]);
+
+  const renderView = () => {
+    if (active === 'readme') return <ReadmeView />;
+    if (active === 'projects') return <ProjectListView onOpen={id => openTab(`proj:${id}`)} />;
+    if (active === 'skills') return <SkillsView />;
+    if (active === 'contact') return <ContactView />;
+    if (active === 'resume') return <ResumeView />;
+    if (active.startsWith('proj:')) return <ProjectView id={active.replace('proj:', '')} />;
+    return null;
+  };
+
+  return (
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      {/* Title bar */}
+      <div style={{ height: 38, background: 'var(--header)', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', padding: '0 14px', gap: 10, flexShrink: 0 }}>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {['#ff6b6b','#e8a000','#56d364'].map((c, i) => (
+            <div key={i} style={{ width: 11, height: 11, borderRadius: '50%', background: c, opacity: 0.8 }} />
+          ))}
+        </div>
+        <div style={{ flex: 1, textAlign: 'center', fontFamily: 'var(--mono)', fontSize: 12, color: 'var(--muted)' }}>
+          lluisestape — <span style={{ color: 'var(--amber)' }}>{FILE_LABELS[active] || active}</span>
+        </div>
+        <BurgerMenu onNav={openTab} />
+      </div>
+
+      {/* Tab bar */}
+      {tabs.length > 0 && (
+        <TabBar tabs={tabs} active={active} onSelect={setActive} onClose={closeTab} />
+      )}
+
+      {/* Body */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        <Sidebar active={active} onSelect={openTab} />
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          {renderView()}
+        </div>
+        <Minimap />
+      </div>
+
+      {/* Status bar */}
+      <div style={{ height: 22, background: 'var(--amber)', display: 'flex', alignItems: 'center', padding: '0 14px', gap: 20, flexShrink: 0 }}>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: '#0d1117', fontWeight: 600 }}>⎇ main</span>
+        <span style={{ fontFamily: 'var(--mono)', fontSize: 10, color: '#0d1117' }}>Lluís Estapé · UPC TelecomBCN · Barcelona</span>
+        <span style={{ marginLeft: 'auto', fontFamily: 'var(--mono)', fontSize: 10, color: '#0d1117' }}>C++ · MATLAB · Python · JUCE</span>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
