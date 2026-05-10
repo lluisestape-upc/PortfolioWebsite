@@ -124,6 +124,22 @@ section { padding: 120px 48px; max-width: 1100px; margin: 0 auto; }
 .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .tag { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); }
 
+/* ── PROJECT PREVIEW IMAGE ── */
+.project-preview { width:100%; height:150px; object-fit:cover; object-position:top center; border-radius:8px; border:1px solid var(--border); margin-bottom:4px; opacity:0.8; transition:opacity 0.2s; display:block; }
+.project-card:hover .project-preview { opacity:1; }
+
+/* ── MODAL IMAGE GALLERY ── */
+.img-gallery { position:relative; margin:16px 0 4px; border-radius:10px; overflow:hidden; background:#000; line-height:0; }
+.img-gallery-img { width:100%; display:none; border-radius:10px; }
+.img-gallery-img.active { display:block; }
+.gallery-arr { position:absolute; top:50%; transform:translateY(-50%); background:rgba(9,9,15,0.75); border:1px solid rgba(255,255,255,0.1); color:var(--text); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:18px; line-height:1; display:flex; align-items:center; justify-content:center; transition:all 0.18s; z-index:2; }
+.gallery-arr:hover { border-color:var(--amber); color:var(--amber); }
+.gallery-arr.prev { left:10px; }
+.gallery-arr.next { right:10px; }
+.gallery-dots { display:flex; justify-content:center; gap:6px; margin:10px 0 16px; }
+.gallery-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); border:none; padding:0; cursor:pointer; transition:background 0.18s; }
+.gallery-dot.active { background:var(--amber); }
+
 /* ── PROJECT MODAL ── */
 .modal-backdrop {
   position: fixed; inset: 0; z-index: 200; background: rgba(9,9,15,0.88);
@@ -283,7 +299,7 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
       <p>I'm fluent in <strong>Spanish, Catalan, and English</strong>, conversational in French. Handball player of 10+ years.</p>
     </div>
     <div class="about-stats">
-      <div class="about-stat"><div class="about-stat-num">6</div><div class="about-stat-label">Open-source projects</div></div>
+      <div class="about-stat"><div class="about-stat-num">8</div><div class="about-stat-label">Open-source projects</div></div>
       <div class="about-stat"><div class="about-stat-num">C++</div><div class="about-stat-label">Primary language for audio DSP</div></div>
       <div class="about-stat"><div class="about-stat-num">BCN</div><div class="about-stat-label">Based in Barcelona, Spain</div></div>
     </div>
@@ -372,12 +388,23 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
 <script>
 /* ── PROJECTS DATA ── */
 const PROJECTS = [
-  { id:'synth', name:'Synth 1.0', tagline:'Polyphonic wavetable VST3 synthesizer', tags:['C++','JUCE','DSP','VST3'], lang:'C++', langColor:'#f34b7d', desc:'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync/Bend/PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine routing to filter cutoff and pitch, interactive 3-band EQ with live FFT spectrum overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Reverb).', features:['16-voice polyphony','Wavetable morphing','4 warp modes','LFO → Filter/Pitch','FX rack + Reverb','XML preset system'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'synth', name:'Synth 1.0', tagline:'Polyphonic wavetable VST3 synthesizer', tags:['C++','JUCE','DSP','VST3'], lang:'C++', langColor:'#f34b7d',
+    preview:'uploads/synth1-main.png',
+    images:['uploads/synth1-main.png','uploads/synth1-fx.png','uploads/synth1-eq.png','uploads/synth1-seq.png','uploads/synth1-main2.png'],
+    desc:'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync / Bend / PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine routing to filter cutoff and pitch, interactive 3-band EQ with live FFT spectrum overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Phaser). Includes a 16-step sequencer with BPM control and per-step note editing, plus an XML preset system with theming support.', features:['16-voice polyphony','Wavetable morphing','4 warp modes','LFO → Filter/Pitch','FX rack (Chorus/Delay/Sat/Phaser)','16-step sequencer','3-band EQ','XML preset system'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'megacrusher', name:'MegaCrusher', tagline:'Multi-mode distortion VST3 plugin', tags:['C++','JUCE','VST3','Distortion'], lang:'C++', langColor:'#f34b7d',
+    preview:'uploads/megacrusher.png',
+    images:['uploads/megacrusher.png'],
+    desc:'A VST3 distortion plugin built in C++/JUCE with three clipping algorithms: Soft (smooth saturation curve), Hard (asymmetric hard clipping), and Fold (wave-folding for harmonic complexity). The large DRIVE knob stages input gain, while TONE shapes the frequency response, CRUSH adds bitcrusher-style degradation, and MIX controls wet/dry blend. OUTPUT trims the final level. Visualised with a real-time transfer curve and stereo VU meters. Custom JUCE LookAndFeel with orange accent aesthetic.', features:['Soft / Hard / Fold modes','DRIVE gain staging','TONE filter','CRUSH control','Real-time transfer curve','Stereo VU meters'], github:'https://github.com/lluisestape-upc', dsp:true },
   { id:'eq', name:'Matlab Parametric EQ', tagline:'5-band parametric EQ with live FFT overlay', tags:['MATLAB','DSP','IIR'], lang:'MATLAB', langColor:'#e8a000', desc:'A 5-band parametric EQ built entirely with MATLAB uifigure. Each band supports Peaking, High-Pass, and Low-Pass topologies via second-order IIR biquad filters (RBJ Audio EQ Cookbook). Features drag-on-plot frequency/gain control, scroll-wheel Q adjustment, live FFT spectrum overlay, chunked audio playback with 150 ms debounce, and a bypass A/B comparison toggle.', features:['5 independent bands','Drag-on-plot controls','Live FFT overlay','Scroll-wheel Q','Bypass A/B','RBJ biquad DSP'], github:'https://github.com/lluisestape-upc', dsp:true },
   { id:'qtgnn', name:'QTGNN Finance', tagline:'Quantum-Temporal GNN for stock price prediction', tags:['Python','GNN','Quantum','ML'], lang:'Python', langColor:'#3572A5', desc:'A hybrid Quantum-Temporal Graph Neural Network pipeline for stock price prediction. A custom QGATConv MessagePassing layer routes each message through a parameterised quantum circuit (Hardware-Efficient Ansatz with data re-uploading). A GRU temporal encoder captures short-term momentum and is fused with FinBERT sentiment embeddings. Zero data leakage via rolling-window graph construction. Evaluated with walk-forward cross-validation and annualised Sharpe ratio.', features:['Quantum graph attention','GRU temporal encoder','FinBERT sentiment','Walk-forward CV','Sharpe ratio eval','Next-day forecast'], github:'https://github.com/lluisestape-upc', dsp:false },
-  { id:'compressor', name:'Basic Compressor', tagline:'Dynamic range compressor VST3 plugin', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback through a live transfer curve graph and real-time input/output level meters calibrated from −60 dB to 0 dB.', features:['Threshold & ratio','Attack & release','Transfer curve display','I/O level meters','VST3 + Standalone','JUCE framework'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'compressor', name:'Vertex Compressor', tagline:'Dynamic range compressor VST3 plugin', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback through a live transfer curve graph and real-time input/output level meters calibrated from −60 dB to 0 dB.', features:['Threshold & ratio','Attack & release','Transfer curve display','I/O level meters','VST3 + Standalone','JUCE framework'], github:'https://github.com/lluisestape-upc', dsp:true },
   { id:'limiter', name:'Basic Limiter', tagline:'Brickwall limiter with lock-free oscilloscope', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 brickwall limiter in C++17/JUCE. Linked-stereo peak detection with exponential release and hard-clip ceiling via juce::jlimit. Lock-free oscilloscope: pixel-window downsampling pushed to atomic-indexed circular buffers, read by the 60 Hz GUI timer. VU meters with analogue decay ballistics. Freeze toggle for inspection.', features:['Brickwall hard clip','Lock-free oscilloscope','Exponential release','Ceiling control','VU meters','Freeze mode'], github:'https://github.com/lluisestape-upc', dsp:true },
   { id:'spectrum', name:'Spectrum Analyzer', tagline:'Real-time FFT analyzer with Bézier interpolation', tags:['C++','JUCE','FFT'], lang:'C++', langColor:'#f34b7d', desc:'A real-time spectrum analyzer VST3/Standalone built with C++/JUCE. Bézier-interpolated FFT curve with moving-average smoothing for a jitter-free display at 60 FPS. Analog-style stereo VU meters with smooth falloff ballistics and dynamic color coding. Stereo panning indicator for L/R balance monitoring.', features:['Bézier FFT curve','60 FPS rendering','Stereo VU meters','Panning indicator','Moving-avg smoothing','VST3 + Standalone'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'tofsynth', name:'ToF Synthesizer', tagline:'Custom hardware synthesizer PCB with ToF sensor keys', tags:['Hardware','KiCad','PCB','Embedded'], lang:'Hardware', langColor:'#4ecdc4',
+    preview:'uploads/tof-pcb.png',
+    images:['uploads/tof-pcb.png'],
+    desc:'A custom hardware synthesizer PCB designed in KiCad — Synthesizer ToF v1.0.0. Uses Time-of-Flight (ToF) distance sensors mounted on 7 key positions (KEY1–KEY7) as expressive playing interfaces, enabling gesture-based playing with no mechanical keys. Features OCT_UP and OCT_DOWN octave shift buttons, a 5V power regulator, LED indicator bar, and a microcontroller connector. Designed from scratch as a standalone hardware instrument with real-time embedded synthesis.', features:['7 ToF sensor keys','Octave shift buttons','Custom PCB (KiCad)','MCU interface header','LED indicator bar','No mechanical keys'], github:'https://github.com/lluisestape-upc', dsp:false },
 ];
 
 const SKILLS_DATA = {
@@ -392,6 +419,7 @@ PROJECTS.forEach(p => {
   const card = document.createElement('div');
   card.className = 'project-card';
   card.innerHTML = `
+    ${p.preview ? `<img src="${p.preview}" class="project-preview" alt="${p.name}">` : ''}
     <div class="project-card-top">
       <div class="project-lang-dot"><span style="width:8px;height:8px;border-radius:50%;background:${p.langColor};display:inline-block"></span>${p.lang}</div>
       <span class="project-arrow">↗</span>
@@ -437,7 +465,13 @@ function openModal(p) {
     <div style="font-family:var(--mono);font-size:11px;color:var(--amber);letter-spacing:2px;margin-bottom:16px">${p.tags.join(' · ')}</div>
     <h2 style="font-size:26px;font-weight:700;color:#fff;margin-bottom:8px;letter-spacing:-0.5px">${p.name}</h2>
     <p style="font-size:13px;color:var(--muted);margin-bottom:20px">${p.tagline}</p>
-    ${p.dsp ? '<canvas id="modal-wave" height="44" style="width:100%;display:block;opacity:0.5;margin-bottom:20px"></canvas>' : ''}
+    ${p.images && p.images.length ? `
+      <div class="img-gallery" id="modal-gallery">
+        ${p.images.map(src=>`<img class="img-gallery-img" src="${src}" alt="${p.name}">`).join('')}
+        ${p.images.length>1 ? `<button class="gallery-arr prev">‹</button><button class="gallery-arr next">›</button>` : ''}
+      </div>
+      ${p.images.length>1 ? `<div class="gallery-dots" id="modal-gallery-dots">${p.images.map(()=>`<button class="gallery-dot"></button>`).join('')}</div>` : ''}
+    ` : p.dsp ? `<canvas id="modal-wave" height="44" style="width:100%;display:block;opacity:0.5;margin-bottom:20px"></canvas>` : ''}
     <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:24px">${p.desc}</p>
     <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">KEY FEATURES</div>
     <div class="features-grid">${p.features.map(f=>`<div class="feature-item">${f}</div>`).join('')}</div>
@@ -445,7 +479,26 @@ function openModal(p) {
   `;
   backdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
-  if (p.dsp) startMiniWave('modal-wave', '#4ecdc4');
+  const gallery = document.getElementById('modal-gallery');
+  if (gallery) {
+    const imgs = gallery.querySelectorAll('.img-gallery-img');
+    const dotsWrap = document.getElementById('modal-gallery-dots');
+    const dots = dotsWrap ? dotsWrap.querySelectorAll('.gallery-dot') : [];
+    let cur = 0;
+    function galShow(i) {
+      imgs.forEach((el,j)=>el.classList.toggle('active',j===i));
+      dots.forEach((el,j)=>el.classList.toggle('active',j===i));
+      cur = i;
+    }
+    galShow(0);
+    const prev = gallery.querySelector('.gallery-arr.prev');
+    const next = gallery.querySelector('.gallery-arr.next');
+    if (prev) prev.addEventListener('click', ()=>galShow((cur-1+imgs.length)%imgs.length));
+    if (next) next.addEventListener('click', ()=>galShow((cur+1)%imgs.length));
+    dots.forEach((d,i)=>d.addEventListener('click',()=>galShow(i)));
+  } else if (p.dsp) {
+    startMiniWave('modal-wave', '#4ecdc4');
+  }
 }
 function closeModal(e, force) {
   if (!force && e && e.target !== document.getElementById('modal-backdrop')) return;
