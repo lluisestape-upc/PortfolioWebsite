@@ -123,6 +123,7 @@ section { padding: 120px 48px; max-width: 1100px; margin: 0 auto; }
 .project-tagline { font-size: 13px; color: var(--muted); line-height: 1.55; }
 .project-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 .tag { font-family: var(--mono); font-size: 10px; padding: 3px 9px; border-radius: 100px; border: 1px solid var(--border); color: var(--muted); }
+.tag.wip { border-color: rgba(232,160,0,0.45); color: var(--amber); }
 
 /* ── PROJECT PREVIEW IMAGE ── */
 .project-preview { width:100%; height:150px; object-fit:cover; object-position:top center; border-radius:8px; border:1px solid var(--border); margin-bottom:4px; opacity:0.8; transition:opacity 0.2s; display:block; }
@@ -163,7 +164,7 @@ section { padding: 120px 48px; max-width: 1100px; margin: 0 auto; }
 .feature-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--amber); flex-shrink: 0; }
 
 /* ── SKILLS ── */
-.skills-groups { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; }
+.skills-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 32px; }
 @media (max-width: 720px) { .skills-groups { grid-template-columns: 1fr; } }
 .skill-group-label { font-family: var(--mono); font-size: 10px; color: var(--amber); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
 .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -239,7 +240,7 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
 <!-- NAV -->
 <nav>
   <div class="nav-left">
-    <div class="nav-kicker">Audio DSP · Machine Learning · C++ · MATLAB · Python</div>
+    <div class="nav-kicker">Audio DSP · Computer Vision · Robotics · Embedded · ML</div>
   </div>
   <button class="burger" id="burger" aria-label="Menu">
     <span class="burger-line"></span>
@@ -273,12 +274,12 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
 <!-- HERO -->
 <section id="hero">
   <h1 class="hero-name fade-up fade-up-1" style="margin-top:48px">Lluís<br/><em>Estapé</em></h1>
-  <p class="hero-sub fade-up fade-up-2">Telecommunications Engineering student at UPC TelecomBCN. I build real-time audio plugins, DSP tools, and ML systems using digital signal processing.</p>
+  <p class="hero-sub fade-up fade-up-2">Telecommunications Engineering student at UPC TelecomBCN. I build real-time audio plugins, gesture-controlled instruments, and ML, robotics &amp; embedded systems — all grounded in digital signal processing.</p>
   <div class="hero-links fade-up fade-up-3">
     <a class="hero-link" href="https://github.com/lluisestape-upc" target="_blank" style="display:inline-flex;align-items:center;gap:8px"><img src="uploads/icons8-github-logo-100.png" style="width:18px;height:18px;object-fit:contain"/> GitHub</a>
     <a class="hero-link" href="https://www.linkedin.com/in/llu%C3%ADs-estap%C3%A9-058687309" target="_blank" style="display:inline-flex;align-items:center;gap:8px"><img src="uploads/pngegg.png" style="width:18px;height:18px;object-fit:contain"/> LinkedIn</a>
     <a class="hero-link" href="uploads/CV_2026.pdf" download>Download CV</a>
-    <a class="hero-link" href="Portfolio.html" download="LluisEstape_Portfolio.html" style="display:inline-flex;align-items:center;gap:6px">Download Portfolio</a>
+    <a class="hero-link" href="uploads/Project_Portfolio.pdf" download="LluisEstape_Portfolio.pdf" style="display:inline-flex;align-items:center;gap:6px">Download Portfolio</a>
   </div>
   <div class="wave-wrap fade-up fade-up-4"><canvas id="hero-wave" height="48" style="width:100%;display:block"></canvas></div>
   <div class="mixer-wrap" id="mixer-wrap"><div class="mixer-channels" id="mixer-channels"></div></div>
@@ -294,12 +295,12 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
   </div>
   <div class="about-grid">
     <div class="about-body">
-      <p>I'm a <strong>Telecommunications Engineering student at UPC TelecomBCN</strong> in Barcelona, with a focus on Audio and Video Signal Processing. I design and build VST3 plugins from scratch in C++/JUCE, write DSP tools in MATLAB, and research ML systems combining graph neural networks with quantum circuits.</p>
+      <p>I'm a <strong>Telecommunications Engineering student at UPC TelecomBCN</strong> in Barcelona, with a focus on Audio and Video Signal Processing. I design and build VST3 plugins from scratch in C++/JUCE, write DSP tools in MATLAB, and research ML systems combining graph neural networks with quantum circuits. I also build gesture-controlled instruments with computer vision, and embedded &amp; robotics systems — from a 3-MCU ESP32 audio handheld to an autonomous warehouse drone running ROS2 and LiDAR SLAM.</p>
       <p>Beyond engineering, I work as a <strong>Cybersecurity Strategy Consultant at Deloitte</strong>, have worked in film production at Arcadia Motion Pictures and Mundo Cero, and produce music independently on <a href="https://www.beatstars.com/estapebeatz" target="_blank" style="color:var(--amber)">BeatStars</a>.</p>
       <p>I'm fluent in <strong>Spanish, Catalan, and English</strong>, conversational in French. Handball player of 10+ years.</p>
     </div>
     <div class="about-stats">
-      <div class="about-stat"><div class="about-stat-num">8</div><div class="about-stat-label">Open-source projects</div></div>
+      <div class="about-stat"><div class="about-stat-num">16</div><div class="about-stat-label">Projects built</div></div>
       <div class="about-stat"><div class="about-stat-num">C++</div><div class="about-stat-label">Primary language for audio DSP</div></div>
       <div class="about-stat"><div class="about-stat-num">BCN</div><div class="about-stat-label">Based in Barcelona, Spain</div></div>
     </div>
@@ -339,11 +340,15 @@ footer { border-top: 1px solid var(--border); padding: 24px 48px; display: flex;
       <div class="skill-pills" id="skills-dsp"></div>
     </div>
     <div>
-      <div class="skill-group-label">Machine Learning</div>
+      <div class="skill-group-label">ML &amp; Vision</div>
       <div class="skill-pills" id="skills-ml"></div>
     </div>
     <div>
-      <div class="skill-group-label">Tools</div>
+      <div class="skill-group-label">Robotics &amp; Embedded</div>
+      <div class="skill-pills" id="skills-embedded"></div>
+    </div>
+    <div>
+      <div class="skill-group-label">Tools &amp; Web</div>
       <div class="skill-pills" id="skills-tools"></div>
     </div>
   </div>
@@ -391,29 +396,57 @@ const PROJECTS = [
   { id:'synth', name:'Synth 1.0', tagline:'Polyphonic wavetable VST3 synthesizer', tags:['C++','JUCE','DSP','VST3'], lang:'C++', langColor:'#f34b7d',
     preview:'uploads/synth1-main.png',
     images:['uploads/synth1-main.png','uploads/synth1-fx.png','uploads/synth1-eq.png','uploads/synth1-seq.png','uploads/synth1-main2.png'],
-    desc:'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync / Bend / PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine routing to filter cutoff and pitch, interactive 3-band EQ with live FFT spectrum overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Phaser). Includes a 16-step sequencer with BPM control and per-step note editing, plus an XML preset system with theming support.', features:['16-voice polyphony','Wavetable morphing','4 warp modes','LFO → Filter/Pitch','FX rack (Chorus/Delay/Sat/Phaser)','16-step sequencer','3-band EQ','XML preset system'], github:'https://github.com/lluisestape-upc', dsp:true },
+    desc:'Serum-inspired architecture: wavetable morphing across Sine · Saw · Square · Triangle, 4 warp modes (Sync / Bend / PWM), 16-voice polyphony with Poly/Mono/Legato modes, unison up to 8 oscillators, LFO engine routing to filter cutoff and pitch, interactive 3-band EQ with live FFT spectrum overlay, and a full FX rack (Chorus, Delay, 2× oversampled Saturation, Phaser). Includes a 16-step sequencer with BPM control and per-step note editing, plus an XML preset system with theming support.', features:['16-voice polyphony','Wavetable morphing','4 warp modes','LFO → Filter/Pitch','FX rack (Chorus/Delay/Sat/Phaser)','16-step sequencer','3-band EQ','XML preset system'], github:'https://github.com/lluisestape-upc/Synth1.0', dsp:true },
+  { id:'edisa', name:'EDISA Inventory Drone', tagline:'Autonomous warehouse UAV — LiDAR SLAM & barcode inventory', tags:['ROS2','SLAM','Electron','Robotics'], lang:'Python', langColor:'#3572A5',
+    preview:'uploads/edisa_slam.png',
+    images:['uploads/edisa_slam.png'],
+    desc:'An autonomous drone that flies through a warehouse, builds a real-time 3D map, detects barcodes and packages, and generates a geolocated inventory with no manual operation. A 14-student team project for the industry client EDISA (UPC PAE); my focus was WP2 — the Ground Control Station and drone-control stack. Onboard: a Pixhawk/ArduCopter flight controller and a Raspberry Pi 5 running ROS2 Jazzy, a Unitree 4D LiDAR feeding Point-LIO SLAM (~800,000 points/scan), and Pi Camera barcode detection (OpenCV, pyzbar, YOLOv8) with every scan tagged to its SLAM x/y/z position. The cross-platform Electron Ground Control Station shows telemetry/arming, an artificial horizon, a 3D point-cloud SLAM viewer and a SQLite-backed inventory tab with CSV/Excel export — talking to the drone over rosbridge WebSocket and MJPEG, no ROS install required on the laptop.', features:['ROS2 Jazzy + Pixhawk','Point-LIO LiDAR SLAM','YOLOv8 barcode scan','Electron Ground Station','3D point-cloud viewer','rosbridge + MJPEG','SQLite inventory + export','MAVLink waypoints'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'aetheric', name:'Aetheric Geometry', tagline:'Hand-gesture additive synth via MediaPipe', tags:['Python','MediaPipe','OpenCV','DSP'], lang:'Python', langColor:'#3572A5',
+    desc:'A musical instrument played with bare hands: a webcam feeds MediaPipe hand-landmark detection and the geometry of the hands is translated into additive synthesis with just intonation. Gesture detectors (pinch, kiss, pyramid, cross, prayer, open palm) sit on a state machine (IDLE / THREAD / POLYGON) with debouncing and robust hand assignment; the waveform is chosen by counting extended fingers. The engine uses additive oscillators with just-intonation ratios, an asymmetric envelope, an IIR low-pass mapped to hand height, a Schroeder reverb (4 comb filters) and tremolo driven by the polygon aspect ratio. Ships with WAV recording, optional MIDI output, a PyInstaller executable and a pytest suite that needs no camera or audio hardware.', features:['MediaPipe hand tracking','6 gesture detectors','Additive + just intonation','State machine + debounce','Schroeder reverb','Height-mapped low-pass','WAV record + MIDI out','pytest, no hardware'], github:'https://github.com/lluisestape-upc/Gestural-Harmonic-Mapping', dsp:true },
   { id:'megacrusher', name:'MegaCrusher', tagline:'Multi-mode distortion VST3 plugin', tags:['C++','JUCE','VST3','Distortion'], lang:'C++', langColor:'#f34b7d',
     preview:'uploads/megacrusher.png',
     images:['uploads/megacrusher.png'],
-    desc:'A VST3 distortion plugin built in C++/JUCE with three clipping algorithms: Soft (smooth saturation curve), Hard (asymmetric hard clipping), and Fold (wave-folding for harmonic complexity). The large DRIVE knob stages input gain, while TONE shapes the frequency response, CRUSH adds bitcrusher-style degradation, and MIX controls wet/dry blend. OUTPUT trims the final level. Visualised with a real-time transfer curve and stereo VU meters. Custom JUCE LookAndFeel with orange accent aesthetic.', features:['Soft / Hard / Fold modes','DRIVE gain staging','TONE filter','CRUSH control','Real-time transfer curve','Stereo VU meters'], github:'https://github.com/lluisestape-upc', dsp:true },
-  { id:'eq', name:'Matlab Parametric EQ', tagline:'5-band parametric EQ with live FFT overlay', tags:['MATLAB','DSP','IIR'], lang:'MATLAB', langColor:'#e8a000', desc:'A 5-band parametric EQ built entirely with MATLAB uifigure. Each band supports Peaking, High-Pass, and Low-Pass topologies via second-order IIR biquad filters (RBJ Audio EQ Cookbook). Features drag-on-plot frequency/gain control, scroll-wheel Q adjustment, live FFT spectrum overlay, chunked audio playback with 150 ms debounce, and a bypass A/B comparison toggle.', features:['5 independent bands','Drag-on-plot controls','Live FFT overlay','Scroll-wheel Q','Bypass A/B','RBJ biquad DSP'], github:'https://github.com/lluisestape-upc', dsp:true },
+    desc:'A VST3 distortion plugin built in C++/JUCE with three clipping algorithms: Soft (smooth saturation curve), Hard (asymmetric hard clipping), and Fold (wave-folding for harmonic complexity). The large DRIVE knob stages input gain, while TONE shapes the frequency response, CRUSH adds bitcrusher-style degradation, and MIX controls wet/dry blend. OUTPUT trims the final level. Visualised with a real-time transfer curve and stereo VU meters. Custom JUCE LookAndFeel with orange accent aesthetic.', features:['Soft / Hard / Fold modes','DRIVE gain staging','TONE filter','CRUSH control','Real-time transfer curve','Stereo VU meters'], github:'https://github.com/lluisestape-upc/MegaCrusher', dsp:true },
+  { id:'eq', name:'Matlab Parametric EQ', tagline:'5-band parametric EQ with live FFT overlay', tags:['MATLAB','DSP','IIR'], lang:'MATLAB', langColor:'#e8a000',
+    preview:'uploads/eq_overview.png',
+    images:['uploads/eq_overview.png'],
+    desc:'A 5-band parametric EQ built entirely with MATLAB uifigure. Each band supports Peaking, High-Pass, and Low-Pass topologies via second-order IIR biquad filters (RBJ Audio EQ Cookbook). Features drag-on-plot frequency/gain control, scroll-wheel Q adjustment, live FFT spectrum overlay, chunked audio playback with 150 ms debounce, and a bypass A/B comparison toggle.', features:['5 independent bands','Drag-on-plot controls','Live FFT overlay','Scroll-wheel Q','Bypass A/B','RBJ biquad DSP'], github:'https://github.com/lluisestape-upc/MATLAB-Parametric-EQ', dsp:true },
   { id:'qtgnn', name:'QTGNN Finance', tagline:'Quantum-Temporal GNN for stock price prediction', tags:['Python','GNN','Quantum','ML'], lang:'Python', langColor:'#3572A5', desc:'A hybrid Quantum-Temporal Graph Neural Network pipeline for stock price prediction. A custom QGATConv MessagePassing layer routes each message through a parameterised quantum circuit (Hardware-Efficient Ansatz with data re-uploading). A GRU temporal encoder captures short-term momentum and is fused with FinBERT sentiment embeddings. Zero data leakage via rolling-window graph construction. Evaluated with walk-forward cross-validation and annualised Sharpe ratio.', features:['Quantum graph attention','GRU temporal encoder','FinBERT sentiment','Walk-forward CV','Sharpe ratio eval','Next-day forecast'], github:'https://github.com/lluisestape-upc', dsp:false },
   { id:'compressor', name:'Vertex Compressor', tagline:'Dynamic range compressor VST3 plugin', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d',
     preview:'uploads/vertex-compressor.png',
     images:['uploads/vertex-compressor.png'],
-    desc:'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback through a live transfer curve graph and real-time input/output level meters calibrated from −60 dB to 0 dB.', features:['Threshold & ratio','Attack & release','Transfer curve display','I/O level meters','VST3 + Standalone','JUCE framework'], github:'https://github.com/lluisestape-upc', dsp:true },
-  { id:'limiter', name:'Basic Limiter', tagline:'Brickwall limiter with lock-free oscilloscope', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d', desc:'A VST3 brickwall limiter in C++17/JUCE. Linked-stereo peak detection with exponential release and hard-clip ceiling via juce::jlimit. Lock-free oscilloscope: pixel-window downsampling pushed to atomic-indexed circular buffers, read by the 60 Hz GUI timer. VU meters with analogue decay ballistics. Freeze toggle for inspection.', features:['Brickwall hard clip','Lock-free oscilloscope','Exponential release','Ceiling control','VU meters','Freeze mode'], github:'https://github.com/lluisestape-upc', dsp:true },
-  { id:'spectrum', name:'Spectrum Analyzer', tagline:'Real-time FFT analyzer with Bézier interpolation', tags:['C++','JUCE','FFT'], lang:'C++', langColor:'#f34b7d', desc:'A real-time spectrum analyzer VST3/Standalone built with C++/JUCE. Bézier-interpolated FFT curve with moving-average smoothing for a jitter-free display at 60 FPS. Analog-style stereo VU meters with smooth falloff ballistics and dynamic color coding. Stereo panning indicator for L/R balance monitoring.', features:['Bézier FFT curve','60 FPS rendering','Stereo VU meters','Panning indicator','Moving-avg smoothing','VST3 + Standalone'], github:'https://github.com/lluisestape-upc', dsp:true },
-  { id:'tofsynth', name:'ToF Synthesizer', tagline:'Custom hardware synthesizer PCB with ToF sensor keys', tags:['Hardware','KiCad','PCB','Embedded'], lang:'Hardware', langColor:'#4ecdc4',
-    preview:'uploads/tof-pcb.png',
-    images:['uploads/tof-pcb.png'],
-    desc:'A custom hardware synthesizer PCB designed in KiCad — Synthesizer ToF v1.0.0. Uses Time-of-Flight (ToF) distance sensors mounted on 7 key positions (KEY1–KEY7) as expressive playing interfaces, enabling gesture-based playing with no mechanical keys. Features OCT_UP and OCT_DOWN octave shift buttons, a 5V power regulator, LED indicator bar, and a microcontroller connector. Designed from scratch as a standalone hardware instrument with real-time embedded synthesis.', features:['7 ToF sensor keys','Octave shift buttons','Custom PCB (KiCad)','MCU interface header','LED indicator bar','No mechanical keys'], github:'https://github.com/lluisestape-upc', dsp:false },
+    desc:'A VST3 audio compressor plugin in C++/JUCE. Controls: Gain (−50 to +10 dB), Threshold (−60 to 0 dB), Ratio (1–10), Attack (0.1–100 ms), Release (10–500 ms). Visual feedback through a live transfer curve graph and real-time input/output level meters calibrated from −60 dB to 0 dB.', features:['Threshold & ratio','Attack & release','Transfer curve display','I/O level meters','VST3 + Standalone','JUCE framework'], github:'https://github.com/lluisestape-upc/vertex', dsp:true },
+  { id:'limiter', name:'Basic Limiter', tagline:'Brickwall limiter with lock-free oscilloscope', tags:['C++','JUCE','VST3'], lang:'C++', langColor:'#f34b7d',
+    preview:'uploads/basiclimiter.png',
+    images:['uploads/basiclimiter.png'],
+    desc:'A VST3 brickwall limiter in C++17/JUCE. Linked-stereo peak detection with exponential release and hard-clip ceiling via juce::jlimit. Lock-free oscilloscope: pixel-window downsampling pushed to atomic-indexed circular buffers, read by the 60 Hz GUI timer. VU meters with analogue decay ballistics. Freeze toggle for inspection.', features:['Brickwall hard clip','Lock-free oscilloscope','Exponential release','Ceiling control','VU meters','Freeze mode'], github:'https://github.com/lluisestape-upc/BasicLimiter', dsp:true },
+  { id:'spectrum', name:'Spectrum Analyzer', tagline:'Real-time FFT analyzer with Bézier interpolation', tags:['C++','JUCE','FFT'], lang:'C++', langColor:'#f34b7d',
+    preview:'uploads/spectrum_new.png',
+    images:['uploads/spectrum_new.png'],
+    desc:'A real-time spectrum analyzer VST3/Standalone built with C++/JUCE. Bézier-interpolated FFT curve with moving-average smoothing for a jitter-free display at 60 FPS. Analog-style stereo VU meters with smooth falloff ballistics and dynamic color coding. Stereo panning indicator for L/R balance monitoring.', features:['Bézier FFT curve','60 FPS rendering','Stereo VU meters','Panning indicator','Moving-avg smoothing','VST3 + Standalone'], github:'https://github.com/lluisestape-upc/SpectrumAnalyzer', dsp:true },
+  { id:'laserharp', name:'LaserHarp', tagline:'Laser-beam instrument — electronics & control software', tags:['Hardware','PCB','Python','Embedded'], lang:'Hardware', langColor:'#4ecdc4',
+    preview:'uploads/laserharp_pcb.png',
+    images:['uploads/laserharp_pcb.png','uploads/laserharp_bb.png'],
+    desc:'A musical instrument where interrupting laser beams triggers the notes — spanning both the electronics design and the control software. Hardware: Fritzing protoboard and PCB designs iterated v1 → v3 with Time-of-Flight (ToF) distance sensors and a Raspberry Pi control layer, including a standalone ToF-Synth prototype (PCB v1.0.0) with 7 ToF sensor keys, octave-shift buttons, a 5 V regulator and an LED indicator bar. Software: a Python/Tkinter simulator of the 16-character LCD menu — a state machine for navigating and editing ADSR, a 3-band EQ, effects and MIDI configuration, with Unicode-rendered value bars.', features:['ToF distance-sensor keys','PCB v1 to v3','7-key ToF-Synth board','Raspberry Pi control','Tkinter LCD simulator','ADSR / EQ / FX menus','MIDI configuration','Unicode value bars'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'airstems', name:'AirStems', tagline:'Conduct & remix song stems with your hands — in development', tags:['Python','MediaPipe','DSP','WIP'], lang:'Python', langColor:'#3572A5',
+    desc:'"Conduct and remix a song\'s stems with your bare hands": source separation + synced lyrics + gestural control over a live DSP engine, built for the June 2026 Musicathon by Musixmatch Pro. Stems (vocals / drums / bass / other) come from the LALAL.AI API with a local Demucs fallback, and Musixmatch provides time-synced, karaoke-style lyrics. Two-hand MediaPipe tracking maps right-hand fingers to per-stem toggles (with hysteresis), left-hand height to a low-pass filter and finger spread to reverb, while a fist triggers a drop. A stereo multi-stem mixer runs on a sounddevice callback with gain changes quantised to the beat grid (librosa on the drum stem) and click-free per-block ramps.', features:['LALAL.AI stem separation','Musixmatch synced lyrics','Two-hand gestural mix','Beat-quantised changes','librosa beat grid','sounddevice engine','Hysteresis toggles','Click-free ramps'], github:'https://github.com/lluisestape-upc', dsp:true },
+  { id:'airpiano', name:'AirPiano', tagline:'Webcam air piano with motion detection', tags:['Python','OpenCV','pygame'], lang:'Python', langColor:'#3572A5',
+    desc:'An 8-note piano (plus a drum-kit variant) played in the air. Frame-difference motion detection with OpenCV watches on-screen key zones and triggers samples through pygame; a motion-threshold calibration step adapts to the lighting in the room.', features:['8 playable notes','Drum-kit variant','OpenCV motion detection','On-screen key zones','pygame playback','Lighting calibration'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'cyberdeck', name:'ESP32 Cyberdeck', tagline:'Hand-built 3-MCU audio handheld — in progress', tags:['ESP32','C++','Embedded','WIP'], lang:'Hardware', langColor:'#4ecdc4',
+    desc:'A hand-built audio handheld (synth / sampler / MIDI): a sandwich of two perfboards with the controls on the walls of the central cavity. A 3-microcontroller architecture uses an ESP32-DevKitC as the brain (ILI9341 TFT over SPI, I²S audio, I²C sensors), a second ESP32 as an I²C slave reading 2 encoders, a slider, buttons and a D-pad, and an ESP32-CAM streaming MJPEG over WiFi. The audio chain runs I²S → PCM5102A DAC → PAM8403 amp → speaker, with AHT10/PIR sensors behind a TCA9548A multiplexer and 2000 mAh LiPo power. The enclosure is generated by a parametric Python script (10 bodies, display/camera windows, speaker grille, push-button "hats") against the Autodesk Fusion 360 API.', features:['3× ESP32 architecture','ILI9341 TFT (SPI)','I²S → PCM5102A → PAM8403','ESP32-CAM MJPEG','I²C encoder/slider slave','TCA9548A sensor mux','2000 mAh LiPo','Fusion 360 case generator'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'aethermap', name:'AetherMap', tagline:'Visual blast-radius reviewer for merge requests', tags:['Python','GitLab','Graphs','Agent'], lang:'Python', langColor:'#3572A5',
+    desc:'An agent for the GitLab Duo Agent Platform that turns the Orbit Knowledge Graph into a blast-radius review of every merge request. The analysis engine maps changed hunks to the definitions that contain them and walks the call graph backwards (CALLS / EXTENDS edges) to find everything transitively impacted, scores risk from LOW to CRITICAL, flags the most widely-called "fragile cores" and suggests reviewers. It posts a Markdown report as an MR comment plus an interactive force-directed impact map, packaged as an Agent Skill with an MR-triggered CI flow. 100% standard-library Python, MIT licence, with a unit-test suite. Built for the June 2026 GitLab Transcend Hackathon.', features:['Call-graph blast radius','Risk LOW to CRITICAL','Fragile-core detection','Reviewer suggestions','Force-directed map','MR-triggered CI','Stdlib-only Python','Unit-test suite'], github:'https://github.com/lluisestape-upc', dsp:false },
+  { id:'espstore', name:'ESP Plugin Store', tagline:'Self-built web store for the ESP VST3 plugins', tags:['React','JavaScript','Web','Vercel'], lang:'JavaScript', langColor:'#f1e05a',
+    desc:'A self-built web store that distributes the ESP-brand plugins, deployed on Vercel. The frontend is a self-contained React 18 single-page app with no build step, featuring seeded generative waveform art per plugin, a screenshot carousel and a download modal with OS and format selection. Distribution packages the VST3 binaries under the GPL v3 licence, with an SEO sitemap and continuous deployment.', features:['React 18 SPA, no build','Generative waveform art','Screenshot carousel','OS/format download modal','GPL v3 binaries','SEO sitemap','Continuous deploy'], github:'https://esp-plugin-store.vercel.app/', linkLabel:'Visit Live Store ↗', dsp:false },
+  { id:'oscillator', name:'Basic Oscillator', tagline:'Three-oscillator generator — the JUCE foundation', tags:['C++','JUCE','DSP'], lang:'C++', langColor:'#f34b7d',
+    desc:'Three independent oscillators with waveform selection (sine, saw, square) built on juce::dsp. My first project in the JUCE ecosystem and the experimental foundation that grew into Synth 1.0.', features:['3 independent oscillators','Sine / Saw / Square','Built on juce::dsp','First JUCE project','Grew into Synth 1.0'], github:'https://github.com/lluisestape-upc', dsp:true },
 ];
 
 const SKILLS_DATA = {
-  dsp:   ['C++ / JUCE','MATLAB','IIR / FIR Filters','VST3 Plugins','FFT / Spectral','Audio Playback'],
-  ml:    ['Python','PyTorch / GNN','Quantum ML','FinBERT / NLP','Walk-Forward CV'],
-  tools: ['Git','Visual Studio','Projucer','Windows DSP'],
+  dsp:      ['C++ / JUCE','MATLAB','IIR / FIR Filters','FFT / Spectral','VST3 Plugins','Wavetable Synth','Lock-free Audio'],
+  ml:       ['Python','MediaPipe','OpenCV','YOLOv8','PyTorch / GNN','Quantum ML','FinBERT / NLP','librosa'],
+  embedded: ['ROS2 (Jazzy)','MAVLink','LiDAR SLAM','ESP32','Fritzing','Fusion 360 API','Raspberry Pi'],
+  tools:    ['Git / GitHub','Visual Studio','React','Electron','Vercel','GitLab CI','LaTeX'],
 };
 
 /* ── RENDER PROJECTS ── */
@@ -429,7 +462,7 @@ PROJECTS.forEach(p => {
     </div>
     <div class="project-name">${p.name}</div>
     <div class="project-tagline">${p.tagline}</div>
-    <div class="project-tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+    <div class="project-tags">${p.tags.map(t=>`<span class="tag${t==='WIP'?' wip':''}">${t}</span>`).join('')}</div>
   `;
   card.addEventListener('click', () => openModal(p));
   grid.appendChild(card);
@@ -448,6 +481,7 @@ function renderSkills(id, items) {
 }
 renderSkills('skills-dsp', SKILLS_DATA.dsp);
 renderSkills('skills-ml',  SKILLS_DATA.ml);
+renderSkills('skills-embedded', SKILLS_DATA.embedded);
 renderSkills('skills-tools', SKILLS_DATA.tools);
 
 /* Animate pills on scroll */
@@ -478,7 +512,7 @@ function openModal(p) {
     <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:24px">${p.desc}</p>
     <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:12px">KEY FEATURES</div>
     <div class="features-grid">${p.features.map(f=>`<div class="feature-item">${f}</div>`).join('')}</div>
-    <a href="${p.github}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:10px 20px;border:1px solid rgba(232,160,0,0.4);border-radius:6px;font-size:13px;font-family:var(--mono);color:var(--amber);background:var(--amber-soft)">View on GitHub ↗</a>
+    <a href="${p.github}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:10px 20px;border:1px solid rgba(232,160,0,0.4);border-radius:6px;font-size:13px;font-family:var(--mono);color:var(--amber);background:var(--amber-soft)">${p.linkLabel || 'View on GitHub ↗'}</a>
   `;
   backdrop.classList.add('open');
   document.body.style.overflow = 'hidden';
